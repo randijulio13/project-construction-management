@@ -1,13 +1,13 @@
 "use client";
 
-import { AuthHero } from "./AuthHero";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import { AuthHero } from "./components/AuthHero";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface AuthLayoutProps {
     children: React.ReactNode;
 }
 
-export function AuthLayout({ children }: AuthLayoutProps) {
+export default function AuthLayout({ children }: AuthLayoutProps) {
     return (
         <div className="flex w-full h-screen bg-background text-foreground overflow-hidden transition-colors duration-300">
             <AuthHero />

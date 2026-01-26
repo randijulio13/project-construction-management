@@ -4,7 +4,7 @@ import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
-import { ProjectForm } from "@/components/ProjectForm";
+import { ProjectForm } from "./components/ProjectForm";
 
 export default function NewProjectPage() {
     const t = useTranslations("projects");
