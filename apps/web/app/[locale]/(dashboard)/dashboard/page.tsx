@@ -2,19 +2,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { logout } from "@/app/actions/auth";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function DashboardPage() {
     return (
         <div className="p-8 max-w-5xl mx-auto">
-            <div className="mb-8 flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                <form action={logout}>
-                    <Button variant="destructive" className="flex items-center gap-2">
-                        <LogOut className="size-4" />
-                        Logout
-                    </Button>
-                </form>
-            </div>
+            <PageHeader
+                title="Dashboard"
+                action={
+                    <form action={logout}>
+                        <Button variant="destructive" className="flex items-center gap-2">
+                            <LogOut className="size-4" />
+                            Logout
+                        </Button>
+                    </form>
+                }
+            />
 
             <Card className="bg-card border-border shadow-sm">
                 <CardHeader>

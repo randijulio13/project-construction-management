@@ -17,6 +17,7 @@ import { Plus, Search, MapPin, Calendar } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { getProjects } from "@/app/actions/project";
 import { Project } from "@construction/shared";
+import { PageHeader } from "@/components/PageHeader";
 
 // Local interface removed in favor of shared type
 
@@ -55,20 +56,18 @@ export default function ProjectsPage() {
 
     return (
         <div className="p-8 space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">{t("list")}</h1>
-                    <p className="text-muted-foreground">
-                        Manajemen dan monitoring progress seluruh proyek konstruksi.
-                    </p>
-                </div>
-                <Link href="/projects/new">
-                    <Button className="flex items-center gap-2">
-                        <Plus className="size-4" />
-                        {t("new")}
-                    </Button>
-                </Link>
-            </div>
+            <PageHeader
+                title={t("list")}
+                subtitle="Manajemen dan monitoring progress seluruh proyek konstruksi."
+                action={
+                    <Link href="/projects/new">
+                        <Button className="flex items-center gap-2">
+                            <Plus className="size-4" />
+                            {t("new")}
+                        </Button>
+                    </Link>
+                }
+            />
 
             <div className="flex items-center gap-4 py-4">
                 <div className="relative flex-1 max-w-sm">
