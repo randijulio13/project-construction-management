@@ -1,0 +1,146 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "warehouse": "Warehouse",
+    "projects": "Projects",
+    "logout": "Logout",
+    "search": "Search...",
+    "accountSettings": "Account Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {name}"
+  },
+  "projects": {
+    "title": "Projects",
+    "list": "Project List",
+    "new": "New Project",
+    "edit": "Edit Project",
+    "details": "Project Details",
+    "name": "Project Name",
+    "address": "Address",
+    "description": "Description",
+    "status": "Status",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "location": "Location",
+    "units": "Units",
+    "documents": "Documents",
+    "addUnit": "Add Unit",
+    "addDocument": "Add Document",
+    "unitName": "Unit Name",
+    "blockNumber": "Block",
+    "unitType": "Unit Type",
+    "docName": "Document Name",
+    "docType": "Type",
+    "noProjects": "No projects yet",
+    "save": "Save",
+    "cancel": "Cancel",
+    "search": "Search...",
+    "timeline":"Timeline"
+  },
+  "profile": {
+    "title": "Profile",
+    "personalInfo": "Personal Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "settings": "Settings",
+    "darkMode": "Dark Mode",
+    "language": "Language",
+    "password": {
+      "title": "Change Password",
+      "current": "Current Password",
+      "new": "New Password",
+      "confirm": "Confirm New Password",
+      "update": "Update Password"
+    },
+    "sidebar": {
+      "myProfile": "My Profile",
+      "myProjects": "My Projects",
+      "notificationRules": "Notification Rules",
+      "security": "Security"
+    },
+    "help": {
+      "title": "Need Help?",
+      "description": "Check our documentation or contact the internal IT support team.",
+      "supportTicket": "Open Support Ticket"
+    },
+    "status": {
+      "active": "Active Account"
+    },
+    "edit": "Edit Profile",
+    "tabs": {
+      "personal": "Personal Information",
+      "job": "Job Details",
+      "security": "Account Security"
+    },
+    "fields": {
+      "fullName": "Full Legal Name",
+      "phone": "Phone Number",
+      "birthDate": "Birth Date",
+      "nationality": "Nationality",
+      "homeOffice": "Home Office"
+    },
+    "assignedProjects": "Assigned Projects",
+    "security": {
+      "password": {
+        "title": "Change Password",
+        "description": "Last updated {days} days ago. We recommend changing it every 90 days.",
+        "button": "Update Password"
+      },
+      "twoFactor": {
+        "title": "Two-Factor Authentication (2FA)",
+        "description": "Add an extra layer of security to your ERP account via SMS or Authenticator App.",
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+      },
+      "lastLogin": "Last login: {date} from IP {ip} ({location})"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Secure Access",
+      "subtitle": "Please enter your credentials to access the ERP dashboard.",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "Enter your corporate email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submit": "Login to Dashboard",
+      "authenticating": "Authenticating...",
+      "noAccount": "Don't have an account?",
+      "registerNow": "Register now"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join the BluePrint ERP ecosystem for better project management.",
+      "firstNameLabel": "First Name",
+      "firstNamePlaceholder": "John",
+      "lastNameLabel": "Last Name",
+      "lastNamePlaceholder": "Doe",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "Enter your corporate email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Register Account",
+      "registering": "Creating Account...",
+      "hasAccount": "Already have an account?",
+      "loginHere": "Login here"
+    },
+    "hero": {
+      "title": "Building the future with precision.",
+      "description": "The ultimate enterprise resource planning solution for modern real estate developers. Manage projects, finances, and logistics in one secure ecosystem.",
+      "stats": {
+        "activeSites": "Active Sites",
+        "engineers": "Engineers",
+        "uptime": "Uptime"
+      }
+    },
+    "assistance": {
+      "title": "Need assistance?",
+      "contact": "Contact IT support at {email} for account activation."
+    }
+  }
+}

@@ -1,0 +1,39 @@
+# Project Construction Management - Development Rules
+
+You are an expert full-stack developer working on the Project Construction Management monorepo. Follow these rules strictly for every task.
+
+## Code Architecture & Patterns
+
+1. **Single Responsibility Principle (SRP)**
+   - Every function, component, or class must have one specific purpose.
+   - If a component grows too large, split it into smaller sub-components.
+
+2. **DRY (Don't Repeat Yourself)**
+   - Always check `packages/shared` for utility logic before implementing.
+   - If logic is shared between `apps/web` and `apps/api`, it MUST reside in `packages/shared`.
+
+3. **Backend (apps/api)**
+   - Use Controllers for request handling and business logic, and Entities for data models (TypeORM).
+   - Use middleware for cross-cutting concerns (auth, validation).
+
+4. **Frontend (apps/web)**
+   - **Component Reuse**: Check existing components in common folders before creating new ones.
+   - **Decomposition**: Break pages into `form`, `hero`, `action-card`, etc. Avoid giant single-file pages.
+   - **Styling & Colors**: Always use **semantic colors** defined in `apps/web/app/globals.css` (e.g., `bg-background`, `text-primary`, `border-input`). **No hardcoded hex/rgb values**.
+
+## Naming Conventions
+
+- **Files/Folders**: `kebab-case` (e.g., `user-service.ts`, `auth-context.tsx`).
+- **React Components**: `PascalCase` (e.g., `LoginForm.tsx`).
+- **Variables/Functions**: `camelCase`.
+- **Types/Interfaces**: `PascalCase`.
+
+## TypeScript Standards
+
+- No `any`. Use `unknown` or proper types/interfaces.
+- Use `Zod` for all runtime data validation (API inputs, Form data).
+
+## Workflow
+
+- Always summarize changes in a brief, technical manner.
+- If unsure about a design decision, ask for clarification.

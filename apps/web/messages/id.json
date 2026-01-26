@@ -1,0 +1,146 @@
+{
+  "common": {
+    "dashboard": "Dasbor",
+    "warehouse": "Gudang",
+    "projects": "Proyek",
+    "logout": "Keluar",
+    "search": "Cari...",
+    "accountSettings": "Pengaturan Akun"
+  },
+  "dashboard": {
+    "title": "Dasbor",
+    "welcome": "Selamat datang kembali, {name}"
+  },
+  "projects": {
+    "title": "Proyek",
+    "list": "Daftar Proyek",
+    "new": "Proyek Baru",
+    "edit": "Ubah Proyek",
+    "details": "Detail Proyek",
+    "name": "Nama Proyek",
+    "address": "Alamat",
+    "description": "Deskripsi",
+    "status": "Status",
+    "startDate": "Tanggal Mulai",
+    "endDate": "Tanggal Selesai",
+    "location": "Lokasi",
+    "units": "Unit Rumah",
+    "documents": "Dokumen",
+    "addUnit": "Tambah Unit",
+    "addDocument": "Tambah Dokumen",
+    "unitName": "Nama Unit",
+    "blockNumber": "Blok",
+    "unitType": "Tipe Unit",
+    "docName": "Nama Dokumen",
+    "docType": "Tipe",
+    "noProjects": "Belum ada proyek",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "search": "Cari...",
+    "timeline": "Timeline"
+  },
+  "profile": {
+    "title": "Profil",
+    "personalInfo": "Informasi Pribadi",
+    "firstName": "Nama Depan",
+    "lastName": "Nama Belakang",
+    "email": "Alamat Email",
+    "settings": "Pengaturan",
+    "darkMode": "Mode Gelap",
+    "language": "Bahasa",
+    "password": {
+      "title": "Ubah Kata Sandi",
+      "current": "Kata Sandi Sekarang",
+      "new": "Kata Sandi Baru",
+      "confirm": "Konfirmasi Kata Sandi Baru",
+      "update": "Perbarui Password"
+    },
+    "sidebar": {
+      "myProfile": "Profil Saya",
+      "myProjects": "Proyek Saya",
+      "notificationRules": "Aturan Notifikasi",
+      "security": "Keamanan"
+    },
+    "help": {
+      "title": "Butuh Bantuan?",
+      "description": "Cek dokumentasi kami atau hubungi tim dukungan IT internal.",
+      "supportTicket": "Buka Tiket Dukungan"
+    },
+    "status": {
+      "active": "Akun Aktif"
+    },
+    "edit": "Ubah Profil",
+    "tabs": {
+      "personal": "Informasi Pribadi",
+      "job": "Detail Pekerjaan",
+      "security": "Keamanan Akun"
+    },
+    "fields": {
+      "fullName": "Nama Lengkap Legal",
+      "phone": "Nomor Telepon",
+      "birthDate": "Tanggal Lahir",
+      "nationality": "Kewarganegaraan",
+      "homeOffice": "Kantor Pusat"
+    },
+    "assignedProjects": "Proyek yang Ditugaskan",
+    "security": {
+      "password": {
+        "title": "Ubah Kata Sandi",
+        "description": "Terakhir diperbarui {days} hari yang lalu. Kami menyarankan untuk mengubahnya setiap 90 hari.",
+        "button": "Perbarui Password"
+      },
+      "twoFactor": {
+        "title": "Autentikasi Dua Faktor (2FA)",
+        "description": "Tambahkan lapisan keamanan ekstra ke akun ERP Anda melalui SMS atau Aplikasi Autentikator.",
+        "enabled": "Aktif",
+        "disabled": "Nonaktif"
+      },
+      "lastLogin": "Login terakhir: {date} dari IP {ip} ({location})"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Akses Aman",
+      "subtitle": "Silakan masukkan kredensial Anda untuk mengakses dashboard ERP.",
+      "emailLabel": "Alamat Email",
+      "emailPlaceholder": "Masukkan email perusahaan Anda",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "rememberMe": "Ingat saya",
+      "forgotPassword": "Lupa password?",
+      "submit": "Login ke Dashboard",
+      "authenticating": "Mengautentikasi...",
+      "noAccount": "Belum punya akun?",
+      "registerNow": "Daftar sekarang"
+    },
+    "register": {
+      "title": "Buat Akun",
+      "subtitle": "Bergabunglah dengan ekosistem BluePrint ERP untuk manajemen proyek yang lebih baik.",
+      "firstNameLabel": "Nama Depan",
+      "firstNamePlaceholder": "John",
+      "lastNameLabel": "Nama Belakang",
+      "lastNamePlaceholder": "Doe",
+      "emailLabel": "Alamat Email",
+      "emailPlaceholder": "Masukkan email perusahaan Anda",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Daftar Akun",
+      "registering": "Membuat Akun...",
+      "hasAccount": "Sudah punya akun?",
+      "loginHere": "Login di sini"
+    },
+    "hero": {
+      "title": "Membangun masa depan dengan presisi.",
+      "description": "Solusi perencanaan sumber daya perusahaan terbaik untuk pengembang real estate modern. Kelola proyek, keuangan, dan logistik dalam satu ekosistem yang aman.",
+      "stats": {
+        "activeSites": "Situs Aktif",
+        "engineers": "Insinyur",
+        "uptime": "Waktu Aktif"
+      }
+    },
+    "assistance": {
+      "title": "Butuh bantuan?",
+      "contact": "Hubungi dukungan IT di {email} untuk aktivasi akun."
+    }
+  }
+}
