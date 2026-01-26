@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Project Rules & Best Practices
 
 Dokumen ini berisi aturan standar pengembangan untuk proyek **Construction Management**. Gunakan dokumen ini sebagai referensi utama saat melakukan coding atau memberikan instruksi kepada AI.

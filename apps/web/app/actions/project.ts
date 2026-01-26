@@ -1,30 +1,30 @@
 "use server";
 
 import { Project } from "@construction/shared";
-import { cookies } from "next/headers";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+import { fetchApi } from "@/lib/api-client";
 
 export async function getProjects(): Promise<Project[]> {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get("token")?.value;
-
-        const response = await fetch(`${API_URL}/projects`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            },
-            next: { revalidate: 0 } // No cache for now to ensure fresh data
+        return await fetchApi<Project[]>("/projects", {
+            revalidate: 0
         });
-
-        if (!response.ok) {
-            console.error("Failed to fetch projects:", await response.text());
-            return [];
-        }
-
-        return await response.json();
     } catch (error) {
         console.error("Error in getProjects action:", error);
         return [];
+    }
+}
+
+export async function createProject(data: { name: string; description?: string }) {
+    try {
+        const result = await fetchApi<Project>("/projects", {
+            method: "POST",
+            body: JSON.stringify(data),
+        });
+
+        return { success: true, data: result };
+    } catch (error) {
+        console.error("Error in createProject action:", error);
+        const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { success: false, error: errorMessage };
     }
 }

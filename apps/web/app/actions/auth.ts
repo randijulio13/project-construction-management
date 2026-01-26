@@ -2,38 +2,41 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { decodeJwt, ApiResponse, AuthResponse, RegisterRequest, LoginRequest, UpdatePasswordRequest, UserSession } from "@construction/shared";
+import { decodeJwt, ApiResponse, AuthResponse, RegisterRequest, LoginRequest, UserSession } from "@construction/shared";
+import { fetchApi } from "@/lib/api-client";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
 
 export async function login(formData: FormData) {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-    });
+    try {
+        const data = await fetchApi<AuthResponse & ApiResponse>("/auth/login", {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+        });
 
-    const data: AuthResponse & ApiResponse = await response.json();
+        if (!data.token) {
+            return { error: data.error || data.message || "Login failed" };
+        }
 
-    if (!response.ok || !data.token) {
-        return { error: data.error || data.message || "Login failed" };
+        // Example usage of shared utility
+        const decoded = decodeJwt(data.token);
+        console.log("Login successful for user:", decoded?.email);
+
+        const cookieStore = await cookies();
+        cookieStore.set("auth_token", data.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 60 * 60 * 24, // 1 day
+            path: "/",
+        });
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Login failed";
+        return { error: errorMessage };
     }
-
-    // Example usage of shared utility
-    const decoded = decodeJwt(data.token);
-    console.log("Login successful for user:", decoded?.email);
-
-    const cookieStore = await cookies();
-    cookieStore.set("auth_token", data.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24, // 1 day
-        path: "/",
-    });
 
     redirect("/dashboard");
 }
@@ -44,16 +47,14 @@ export async function register(formData: FormData) {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const response = await fetch(`${API_URL}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, email, password }),
-    });
-
-    const data: ApiResponse = await response.json();
-
-    if (!response.ok) {
-        return { error: data.error || data.message || "Registration failed" };
+    try {
+        await fetchApi<ApiResponse>("/auth/register", {
+            method: "POST",
+            body: JSON.stringify({ firstName, lastName, email, password }),
+        });
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Registration failed";
+        return { error: errorMessage };
     }
 
     redirect("/login");
@@ -66,38 +67,16 @@ export async function logout() {
 }
 
 export async function getProfile() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("auth_token")?.value;
-
-    if (!token) {
-        return { error: "Not authenticated" };
+    try {
+        const data = await fetchApi<ApiResponse<UserSession>>("/auth/profile");
+        return { data: data.data };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to fetch profile";
+        return { error: errorMessage };
     }
-
-    const response = await fetch(`${API_URL}/auth/profile`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-    });
-
-    const data: ApiResponse<UserSession> = await response.json();
-
-    if (!response.ok) {
-        return { error: data.error || data.message || "Failed to fetch profile" };
-    }
-
-    return { data: data.data };
 }
 
 export async function updatePassword(formData: FormData) {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("auth_token")?.value;
-
-    if (!token) {
-        return { error: "Not authenticated" };
-    }
-
     const currentPassword = formData.get("currentPassword");
     const newPassword = formData.get("newPassword");
     const confirmPassword = formData.get("confirmPassword");
@@ -106,20 +85,15 @@ export async function updatePassword(formData: FormData) {
         return { error: "Passwords do not match" };
     }
 
-    const response = await fetch(`${API_URL}/auth/update-password`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ currentPassword, newPassword }),
-    });
+    try {
+        const data = await fetchApi<ApiResponse>("/auth/update-password", {
+            method: "POST",
+            body: JSON.stringify({ currentPassword, newPassword }),
+        });
 
-    const data: ApiResponse = await response.json();
-
-    if (!response.ok) {
-        return { error: data.error || data.message || "Failed to update password" };
+        return { success: true, message: data.message };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to update password";
+        return { error: errorMessage };
     }
-
-    return { success: true, message: data.message };
 }
