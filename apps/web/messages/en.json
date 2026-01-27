@@ -153,5 +153,15 @@
       "title": "Need assistance?",
       "contact": "Contact IT support at {email} for account activation."
     }
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email address",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 6 characters",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "projectNameRequired": "Project name is required",
+    "projectAddressRequired": "Project address is required"
   }
 }

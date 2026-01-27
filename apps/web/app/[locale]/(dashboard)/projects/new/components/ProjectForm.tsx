@@ -15,38 +15,39 @@ import {
 } from "@/components/ui/select";
 import { createProject } from "@/app/actions/project";
 
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createProjectSchema, CreateProjectInput, CreateProjectOutput } from "@construction/shared";
+
 export function ProjectForm() {
     const t = useTranslations("projects");
+    const tVal = useTranslations("validation");
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        name: "",
-        address: "",
-        description: "",
-        status: "Draft",
-        startDate: "",
-        endDate: "",
-        latitude: "",
-        longitude: "",
+
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm<CreateProjectInput>({
+        resolver: zodResolver(createProjectSchema),
+        defaultValues: {
+            status: "Draft",
+        }
     });
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const onSubmit: SubmitHandler<CreateProjectInput> = async (data) => {
         setIsLoading(true);
 
         try {
-            const payload = {
-                ...formData,
-                latitude: formData.latitude ? parseFloat(formData.latitude) : undefined,
-                longitude: formData.longitude ? parseFloat(formData.longitude) : undefined,
-            };
-
-            const result = await createProject(payload);
+            // data is actually transformed by zodResolver
+            const validatedData = data as unknown as CreateProjectOutput;
+            const result = await createProject(validatedData);
 
             if (result.success) {
                 router.push("/projects");
             } else {
-                // In a real app, we might want to show a toast here
                 console.error("Error creating project:", result.error);
                 alert(result.error);
             }
@@ -58,53 +59,58 @@ export function ProjectForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-card border rounded-xl overflow-hidden shadow-sm">
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-card border rounded-xl overflow-hidden shadow-sm">
             <div className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2 col-span-full">
                         <label className="text-sm font-medium">{t("name")}</label>
                         <Input
-                            required
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            {...register("name")}
+                            className={errors.name ? 'border-destructive' : ''}
                             placeholder={t("namePlaceholder")}
                         />
+                        {errors.name && <p className="text-xs text-destructive font-medium">{tVal(errors.name.message as string)}</p>}
                     </div>
 
                     <div className="space-y-2 col-span-full">
                         <label className="text-sm font-medium">{t("address")}</label>
                         <Textarea
-                            required
-                            value={formData.address}
-                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                            {...register("address")}
+                            className={errors.address ? 'border-destructive' : ''}
                             placeholder={t("addressPlaceholder")}
                         />
+                        {errors.address && <p className="text-xs text-destructive font-medium">{tVal(errors.address.message as string)}</p>}
                     </div>
 
                     <div className="space-y-2 col-span-full">
                         <label className="text-sm font-medium">{t("description")}</label>
                         <Textarea
-                            value={formData.description}
-                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            {...register("description")}
                             placeholder={t("descriptionPlaceholder")}
                         />
                     </div>
 
                     <div className="space-y-2">
                         <label className="text-sm font-medium">{t("status")}</label>
-                        <Select
-                            value={formData.status}
-                            onValueChange={(value: string) => setFormData({ ...formData, status: value })}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder={t("statusPlaceholder")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Draft">{t("statusDraft")}</SelectItem>
-                                <SelectItem value="Active">{t("statusActive")}</SelectItem>
-                                <SelectItem value="Completed">{t("statusCompleted")}</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <Controller
+                            name="status"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder={t("statusPlaceholder")} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Draft">{t("statusDraft")}</SelectItem>
+                                        <SelectItem value="Active">{t("statusActive")}</SelectItem>
+                                        <SelectItem value="Completed">{t("statusCompleted")}</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 col-span-full md:col-span-1">
@@ -112,16 +118,14 @@ export function ProjectForm() {
                             <label className="text-sm font-medium">{t("startDate")}</label>
                             <Input
                                 type="date"
-                                value={formData.startDate}
-                                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                {...register("startDate")}
                             />
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-medium">{t("endDate")}</label>
                             <Input
                                 type="date"
-                                value={formData.endDate}
-                                onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                                {...register("endDate")}
                             />
                         </div>
                     </div>
@@ -131,13 +135,11 @@ export function ProjectForm() {
                         <div className="grid grid-cols-2 gap-2">
                             <Input
                                 placeholder={t("lat")}
-                                value={formData.latitude}
-                                onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                                {...register("latitude")}
                             />
                             <Input
                                 placeholder={t("long")}
-                                value={formData.longitude}
-                                onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                                {...register("longitude")}
                             />
                         </div>
                     </div>

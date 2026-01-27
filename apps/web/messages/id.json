@@ -150,8 +150,18 @@
       }
     },
     "assistance": {
-      "title": "Butuh bantuan?",
-      "contact": "Hubungi dukungan IT di {email} untuk aktivasi akun."
+      "title": "Need assistance?",
+      "contact": "Contact IT support at {email} for account activation."
     }
+  },
+  "validation": {
+    "emailRequired": "Email wajib diisi",
+    "invalidEmail": "Format email tidak valid",
+    "passwordRequired": "Kata sandi wajib diisi",
+    "passwordMin": "Kata sandi minimal 6 karakter",
+    "firstNameRequired": "Nama depan wajib diisi",
+    "lastNameRequired": "Nama belakang wajib diisi",
+    "projectNameRequired": "Nama proyek wajib diisi",
+    "projectAddressRequired": "Alamat proyek wajib diisi"
   }
 }

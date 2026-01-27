@@ -7,20 +7,44 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema, RegisterInput } from "@construction/shared";
 
 export function RegisterForm() {
     const tAuth = useTranslations("auth.register");
+    const tVal = useTranslations("validation");
 
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    const clientAction = async (formData: FormData) => {
+    const {
+        register: registerField,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RegisterInput>({
+        resolver: zodResolver(registerSchema),
+    });
+
+    const onSubmit = async (data: RegisterInput) => {
         setIsLoading(true);
         setError("");
-        const result = await register(formData);
-        if (result?.error) {
-            setError(result.error);
+
+        try {
+            const formData = new FormData();
+            formData.append("firstName", data.firstName);
+            formData.append("lastName", data.lastName);
+            formData.append("email", data.email);
+            formData.append("password", data.password);
+
+            const result = await register(formData);
+            if (result?.error) {
+                setError(result.error);
+                setIsLoading(false);
+            }
+        } catch (err) {
+            setError("Something went wrong");
             setIsLoading(false);
         }
     };
@@ -39,28 +63,28 @@ export function RegisterForm() {
                 </div>
             )}
 
-            <form action={clientAction} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Name Fields */}
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-foreground">{tAuth("firstNameLabel")}</label>
                         <Input
-                            name="firstName"
+                            {...registerField("firstName")}
                             type="text"
-                            required
-                            className="px-4 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60"
+                            className={`px-4 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60 ${errors.firstName ? 'border-destructive' : ''}`}
                             placeholder={tAuth("firstNamePlaceholder")}
                         />
+                        {errors.firstName && <p className="text-xs text-destructive font-medium">{tVal(errors.firstName.message as string)}</p>}
                     </div>
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-foreground">{tAuth("lastNameLabel")}</label>
                         <Input
-                            name="lastName"
+                            {...registerField("lastName")}
                             type="text"
-                            required
-                            className="px-4 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60"
+                            className={`px-4 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60 ${errors.lastName ? 'border-destructive' : ''}`}
                             placeholder={tAuth("lastNamePlaceholder")}
                         />
+                        {errors.lastName && <p className="text-xs text-destructive font-medium">{tVal(errors.lastName.message as string)}</p>}
                     </div>
                 </div>
 
@@ -72,13 +96,13 @@ export function RegisterForm() {
                             <Mail className="size-5" />
                         </div>
                         <Input
-                            name="email"
+                            {...registerField("email")}
                             type="email"
-                            required
-                            className="pl-11 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60"
+                            className={`pl-11 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60 ${errors.email ? 'border-destructive' : ''}`}
                             placeholder={tAuth("emailPlaceholder")}
                         />
                     </div>
+                    {errors.email && <p className="text-xs text-destructive font-medium">{tVal(errors.email.message as string)}</p>}
                 </div>
 
                 {/* Password Field */}
@@ -89,10 +113,9 @@ export function RegisterForm() {
                             <Lock className="size-5" />
                         </div>
                         <Input
-                            name="password"
+                            {...registerField("password")}
                             type={showPassword ? "text" : "password"}
-                            required
-                            className="pl-11 pr-12 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60"
+                            className={`pl-11 pr-12 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60 ${errors.password ? 'border-destructive' : ''}`}
                             placeholder={tAuth("passwordPlaceholder")}
                         />
                         <button
@@ -107,6 +130,7 @@ export function RegisterForm() {
                             )}
                         </button>
                     </div>
+                    {errors.password && <p className="text-xs text-destructive font-medium">{tVal(errors.password.message as string)}</p>}
                 </div>
 
                 {/* Action Button */}

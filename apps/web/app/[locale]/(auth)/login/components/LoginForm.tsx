@@ -1,27 +1,49 @@
 "use client";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, LoginInput } from "@construction/shared";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { login } from "@/app/actions/auth";
-import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { AlertCircleIcon, ArrowRightIcon, EyeIcon, EyeOffIcon, InfoIcon, LockIcon, MailIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Info, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/routing";
 
 export function LoginForm() {
     const tAuth = useTranslations("auth.login");
     const tAssistance = useTranslations("auth.assistance");
+    const tVal = useTranslations("validation");
 
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    const clientAction = async (formData: FormData) => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginInput>({
+        resolver: zodResolver(loginSchema),
+    });
+
+    const onSubmit = async (data: LoginInput) => {
         setIsLoading(true);
         setError("");
-        const result = await login(formData);
-        if (result?.error) {
-            setError(result.error);
+
+        try {
+            const formData = new FormData();
+            formData.append("email", data.email);
+            formData.append("password", data.password);
+
+            const result = await login(formData);
+            if (result?.error) {
+                setError(result.error);
+                setIsLoading(false);
+            }
+        } catch (err) {
+            setError("Something went wrong");
             setIsLoading(false);
         }
     };
@@ -35,27 +57,27 @@ export function LoginForm() {
 
             {error && (
                 <div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive flex items-center gap-3 font-medium">
-                    <AlertCircle className="size-5" />
+                    <AlertCircleIcon className="size-5" />
                     {error}
                 </div>
             )}
 
-            <form action={clientAction} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Email Field */}
                 <div className="space-y-2">
                     <label className="block text-sm font-semibold text-foreground">{tAuth("emailLabel")}</label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors z-10">
-                            <span className="shrink-0"><Mail className="size-5" /></span>
+                            <span className="shrink-0"><MailIcon className="size-5" /></span>
                         </div>
                         <Input
-                            name="email"
+                            {...register("email")}
                             type="email"
-                            required
-                            className="pl-11 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60"
+                            className={`pl-11 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60 ${errors.email ? 'border-destructive' : ''}`}
                             placeholder={tAuth("emailPlaceholder")}
                         />
                     </div>
+                    {errors.email && <p className="text-xs text-destructive font-medium">{tVal(errors.email.message as string)}</p>}
                 </div>
 
                 {/* Password Field */}
@@ -63,13 +85,12 @@ export function LoginForm() {
                     <label className="block text-sm font-semibold text-foreground">{tAuth("passwordLabel")}</label>
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors z-10">
-                            <span className="shrink-0"><Lock className="size-5" /></span>
+                            <span className="shrink-0"><LockIcon className="size-5" /></span>
                         </div>
                         <Input
-                            name="password"
+                            {...register("password")}
                             type={showPassword ? "text" : "password"}
-                            required
-                            className="pl-11 pr-12 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60"
+                            className={`pl-11 pr-12 h-14 bg-muted/30 border-border rounded-lg placeholder:text-muted-foreground/60 ${errors.password ? 'border-destructive' : ''}`}
                             placeholder={tAuth("passwordPlaceholder")}
                         />
                         <button
@@ -78,12 +99,13 @@ export function LoginForm() {
                             className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-primary transition-colors z-10"
                         >
                             {showPassword ? (
-                                <EyeOff className="size-5" />
+                                <EyeOffIcon className="size-5" />
                             ) : (
-                                <Eye className="size-5" />
+                                <EyeIcon className="size-5" />
                             )}
                         </button>
                     </div>
+                    {errors.password && <p className="text-xs text-destructive font-medium">{tVal(errors.password.message as string)}</p>}
                 </div>
 
                 {/* Remember & Forgot */}
@@ -105,7 +127,7 @@ export function LoginForm() {
                     className="w-full h-14 rounded-lg font-bold text-base shadow-lg shadow-primary/20 transition-all gap-2"
                 >
                     <span>{isLoading ? tAuth("authenticating") : tAuth("submit")}</span>
-                    {!isLoading && <ArrowRight className="size-5" />}
+                    {!isLoading && <ArrowRightIcon className="size-5" />}
                 </Button>
             </form>
 
@@ -118,7 +140,7 @@ export function LoginForm() {
 
             {/* Support/Help */}
             <div className="mt-10 p-4 rounded-xl bg-primary/5 border border-primary/10 flex items-start gap-3">
-                <span className="shrink-0"><Info className="text-primary size-6" /></span>
+                <span className="shrink-0"><InfoIcon className="text-primary size-6" /></span>
                 <div className="text-sm">
                     <p className="font-bold text-foreground">{tAssistance("title")}</p>
                     <p className="text-muted-foreground">
