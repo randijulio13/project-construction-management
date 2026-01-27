@@ -5,7 +5,10 @@
     "projects": "Proyek",
     "logout": "Keluar",
     "search": "Cari...",
-    "accountSettings": "Pengaturan Akun"
+    "accountSettings": "Pengaturan Akun",
+    "material-in": "Material Masuk",
+    "stock-out": "Stok Keluar",
+    "inventory-list": "List Stok"
   },
   "dashboard": {
     "title": "Dasbor",
@@ -18,6 +21,7 @@
     "newSubtitle": "Isi detail proyek secara lengkap.",
     "edit": "Ubah Proyek",
     "details": "Detail Proyek",
+    "logo": "Logo Proyek",
     "name": "Nama Proyek",
     "namePlaceholder": "Masukkan nama proyek",
     "address": "Alamat",

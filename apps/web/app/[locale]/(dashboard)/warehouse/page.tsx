@@ -2,15 +2,16 @@ import { ReceiveHeader } from "./components/receive-header";
 import { StatsGrid } from "./components/stats-grid";
 import { VerificationTable } from "./components/verification-table";
 import { FooterActions } from "./components/footer-actions";
+import PageWrapper from "@/components/PageWrapper";
 
 export default function WarehousePage() {
     return (
         <>
-            <div className="p-8">
+            <PageWrapper>
                 <ReceiveHeader />
                 <StatsGrid />
                 <VerificationTable />
-            </div>
+            </PageWrapper>
             <FooterActions />
         </>
     );

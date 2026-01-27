@@ -6,10 +6,7 @@ import { useTranslations } from "next-intl";
 import {
     LayoutDashboard,
     Building2,
-    Warehouse,
-    ShoppingCart,
-    BarChart3,
-    Settings,
+    Warehouse, Settings,
     Construction
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -27,18 +24,22 @@ const getNavigation = (t: any) => [
         href: "/warehouse",
         icon: Warehouse,
         children: [
-            { name: "Material In", href: "/warehouse" },
-            { name: "Stock Out", href: "/warehouse/stock-out" },
-            { name: "Inventory List", href: "/warehouse/inventory" },
+            { name: t("material-in"), href: "/warehouse" },
+            { name: t("stock-out"), href: "/warehouse/stock-out" },
+            { name: t("inventory-list"), href: "/warehouse/inventory" },
         ]
     },
-    { name: "Procurement", href: "/procurement", icon: ShoppingCart },
-    { name: "Reports", href: "/reports", icon: BarChart3 },
 ];
 
 
 
-export default function Sidebar() {
+interface SidebarProps {
+    className?: string;
+    hideLogo?: boolean;
+    onClick?: () => void;
+}
+
+export default function Sidebar({ className, hideLogo = false, onClick }: SidebarProps) {
     const [user, setUser] = useState<UserSession | null>(null);
     const pathname = usePathname();
     const t = useTranslations("common");
@@ -53,20 +54,22 @@ export default function Sidebar() {
     }, []);
 
     return (
-        <aside className="w-64 border-r border-border flex flex-col bg-sidebar shrink-0">
-            <div className="p-6">
-                <div className="flex items-center gap-3">
-                    <div className="bg-primary rounded-lg size-10 flex items-center justify-center text-primary-foreground">
-                        <Construction className="size-6" />
-                    </div>
-                    <div>
-                        <h1 className="text-base font-bold leading-tight">BluePrint ERP</h1>
-                        <p className="text-muted-foreground text-xs">
-                            Sistem Manajemen Konstruksi
-                        </p>
+        <aside className={cn("w-64 border-r border-border flex flex-col bg-sidebar shrink-0", className)}>
+            {!hideLogo && (
+                <div className="p-6">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-primary rounded-lg size-10 flex items-center justify-center text-primary-foreground">
+                            <Construction className="size-6" />
+                        </div>
+                        <div>
+                            <h1 className="text-base font-bold leading-tight">BluePrint ERP</h1>
+                            <p className="text-muted-foreground text-xs">
+                                Sistem Manajemen Konstruksi
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             <nav className="flex-1 px-3 space-y-1">
                 {navigation.map((item) => {
@@ -75,6 +78,7 @@ export default function Sidebar() {
                     return (
                         <div key={item.name} className="space-y-1">
                             <Link
+                                onClick={onClick}
                                 href={item.href}
                                 className={cn(
                                     "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium",
@@ -93,6 +97,7 @@ export default function Sidebar() {
                                         const isChildActive = pathname === child.href;
                                         return (
                                             <Link
+                                                onClick={onClick}
                                                 key={child.name}
                                                 href={child.href}
                                                 className={cn(

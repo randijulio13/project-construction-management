@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { getProjects } from "@/app/actions/project";
 import { Project } from "@construction/shared";
 import { PageHeader } from "@/components/PageHeader";
+import PageWrapper from "@/components/PageWrapper";
 
 // Local interface removed in favor of shared type
 
@@ -55,7 +56,7 @@ export default function ProjectsPage() {
     };
 
     return (
-        <div className="p-8 space-y-6">
+        <PageWrapper>
             <PageHeader
                 title={t("list")}
                 subtitle="Manajemen dan monitoring progress seluruh proyek konstruksi."
@@ -142,6 +143,6 @@ export default function ProjectsPage() {
                     </TableBody>
                 </Table>
             </div>
-        </div>
+        </PageWrapper>
     );
 }

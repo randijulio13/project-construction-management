@@ -1,12 +1,20 @@
 "use client";
 
-import { ChevronRight, Search, Bell, Home } from "lucide-react";
+import { ChevronRight, Search, Bell, Home, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import {
+    Sheet,
+    SheetContent,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+import Sidebar from "./Sidebar";
 
 import { usePathname } from "@/i18n/routing";
+import { useState } from "react";
 
 export type Breadcrumb = {
     label: string;
@@ -32,11 +40,24 @@ export default function Header({ breadcrumbs: manualBreadcrumbs }: HeaderProps) 
             return { label, href };
         });
 
-    return (
+    const [isOpenSidebar, setIsOpenSidebar] = useState(false)
 
-        <header className="h-16 border-b border-border bg-background flex items-center justify-between px-8 shrink-0">
+    return (
+        <header className="h-16 border-b border-border bg-background flex items-center justify-between px-4 md:px-8 shrink-0">
             <div className="flex items-center gap-4">
-                <nav className="flex items-center gap-2 text-sm">
+                <Sheet open={isOpenSidebar} onOpenChange={setIsOpenSidebar}>
+                    <SheetTrigger asChild>
+                        <button className="lg:hidden p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                            <Menu className="size-5" />
+                        </button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="p-0 w-64">
+                        <SheetTitle />
+                        <Sidebar className="w-full border-none h-full" onClick={() => setIsOpenSidebar(false)} />
+                    </SheetContent>
+                </Sheet>
+
+                <nav className="hidden md:flex items-center gap-2 text-sm">
                     <Link
                         href="/dashboard"
                         className="text-muted-foreground hover:text-foreground transition-colors flex items-center"
@@ -81,16 +102,20 @@ export default function Header({ breadcrumbs: manualBreadcrumbs }: HeaderProps) 
                 </nav>
             </div>
 
-            <div className="flex items-center gap-4">
-                <div className="relative">
+            <div className="flex items-center gap-2 md:gap-4">
+                <div className="relative hidden sm:block">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input
-                        className="pl-10 w-64 h-9 bg-muted border-none focus-visible:ring-1 focus-visible:ring-primary/50"
+                        className="pl-10 w-40 lg:w-64 h-9 bg-muted border-none focus-visible:ring-1 focus-visible:ring-primary/50"
                         placeholder={t("search")}
                         type="text"
                     />
 
                 </div>
+
+                <button className="sm:hidden p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-full transition-colors">
+                    <Search className="size-5" />
+                </button>
 
                 <button className="p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-full transition-colors relative">
                     <Bell className="size-5" />

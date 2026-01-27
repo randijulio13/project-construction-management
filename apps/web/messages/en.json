@@ -5,7 +5,10 @@
     "projects": "Projects",
     "logout": "Logout",
     "search": "Search...",
-    "accountSettings": "Account Settings"
+    "accountSettings": "Account Settings",
+    "material-in": "Material In",
+    "stock-out": "Stock Out",
+    "inventory-list": "Inventory List"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -18,6 +21,7 @@
     "newSubtitle": "Fill in project details completely.",
     "edit": "Edit Project",
     "details": "Project Details",
+    "logo": "Project Logo",
     "name": "Project Name",
     "namePlaceholder": "Enter project name",
     "address": "Address",

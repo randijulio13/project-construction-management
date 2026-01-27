@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { PageHeader } from "@/components/PageHeader";
+import PageWrapper from "@/components/PageWrapper";
 
 export default function DashboardPage() {
     return (
-        <div className="p-8 max-w-5xl mx-auto">
+        <PageWrapper>
             <PageHeader
                 title="Dashboard"
                 action={
@@ -51,6 +52,6 @@ export default function DashboardPage() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </PageWrapper>
     );
 }

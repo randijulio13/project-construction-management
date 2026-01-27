@@ -21,6 +21,7 @@ export const createProjectSchema = z.object({
       if (typeof val === "number") return val;
       return undefined;
     }),
+  logo: z.string().optional(),
 });
 
 export type CreateProjectInput = z.input<typeof createProjectSchema>;
