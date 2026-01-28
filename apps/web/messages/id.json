@@ -76,6 +76,12 @@
     "saving": "Menyimpan...",
     "cancel": "Batal",
     "search": "Cari...",
+    "saveChanges": "Simpan Perubahan",
+    "assignUnit": "Hubungkan Unit",
+    "assignUnitSubtitle": "Pilih unit rumah untuk dihubungkan ke area siteplan ini.",
+    "selectUnit": "Pilih Unit...",
+    "noUnitAssigned": "Tidak Ada Unit Terhubung",
+    "confirmAssignment": "Konfirmasi Hubungan",
     "timeline": "Timeline"
   },
   "profile": {

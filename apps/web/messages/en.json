@@ -76,6 +76,12 @@
     "saving": "Saving...",
     "cancel": "Cancel",
     "search": "Search...",
+    "saveChanges": "Save Changes",
+    "assignUnit": "Assign Unit",
+    "assignUnitSubtitle": "Select a house unit to link to this siteplan area.",
+    "selectUnit": "Select Unit...",
+    "noUnitAssigned": "No Unit Assigned",
+    "confirmAssignment": "Confirm Assignment",
     "timeline": "Timeline"
   },
   "profile": {

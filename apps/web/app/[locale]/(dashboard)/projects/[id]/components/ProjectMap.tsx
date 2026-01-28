@@ -9,6 +9,7 @@ import {
     Card,
     CardContent,
     CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -57,21 +58,25 @@ export function ProjectMap({
                     </CardTitle>
                     <CardDescription>{address}</CardDescription>
                 </div>
-                <Button
-                    size="sm"
-                    variant="outline"
-                    className="gap-2"
-                    onClick={() => window.open(googleMapsUrl, "_blank")}
-                >
-                    <ExternalLink className="size-4" />
-                    {t("viewOnGoogleMaps")}
-                </Button>
             </CardHeader>
             <CardContent>
                 <div className="h-[400px] w-full rounded-lg overflow-hidden border relative z-0">
                     <MapContent latitude={latitude} longitude={longitude} name={name} />
                 </div>
+
             </CardContent>
+            <CardFooter>
+
+                <Button
+                    size="sm"
+                    variant="outline"
+                    className="gap-2 w-full"
+                    onClick={() => window.open(googleMapsUrl, "_blank")}
+                >
+                    <ExternalLink className="size-4" />
+                    {t("viewOnGoogleMaps")}
+                </Button>
+            </CardFooter>
         </Card>
     );
 }

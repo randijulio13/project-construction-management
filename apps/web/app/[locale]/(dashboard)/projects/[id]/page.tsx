@@ -76,6 +76,18 @@ export default function ProjectDetailsPage({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Column - Main Details & Sub-data */}
                 <div className="lg:col-span-2 space-y-8">
+
+                    <DigitalSiteplan
+                        projectId={project.id}
+                        siteplan={project.siteplan ? `${API_URL}${project.siteplan}` : null}
+                        units={project.units || []}
+                    />
+                    <UnitsTable units={project.units || []} />
+                    <DocumentsList documents={project.documents || []} />
+                </div>
+
+                {/* Right Column - Brief Stats/Info */}
+                <div className="space-y-8">
                     {project.latitude !== null && project.longitude !== null && (
                         <ProjectMap
                             latitude={Number(project.latitude)}
@@ -84,16 +96,6 @@ export default function ProjectDetailsPage({
                             address={project.address}
                         />
                     )}
-                    <DigitalSiteplan
-                        projectId={project.id}
-                        siteplan={project.siteplan ? `${API_URL}${project.siteplan}` : null}
-                    />
-                    <UnitsTable units={project.units || []} />
-                    <DocumentsList documents={project.documents || []} />
-                </div>
-
-                {/* Right Column - Brief Stats/Info */}
-                <div className="space-y-8">
                     <ProjectStats
                         project={{
                             ...project,
