@@ -27,3 +27,14 @@ export const createProjectSchema = z.object({
 
 export type CreateProjectInput = z.input<typeof createProjectSchema>;
 export type CreateProjectOutput = z.output<typeof createProjectSchema>;
+
+export const createProjectUnitSchema = z.object({
+  projectId: z.number(),
+  name: z.string().min(1, "unitNameRequired"),
+  blockNumber: z.string().min(1, "blockNumberRequired"),
+  unitType: z.string().min(1, "unitTypeRequired"),
+  landArea: z.number(),
+  siteplanSelector: z.string().optional().nullable(),
+});
+
+export type CreateProjectUnitInput = z.infer<typeof createProjectUnitSchema>;

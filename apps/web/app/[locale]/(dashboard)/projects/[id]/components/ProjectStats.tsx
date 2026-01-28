@@ -19,7 +19,7 @@ export function ProjectStats({ project }: ProjectStatsProps) {
 
     return (
         <div className="space-y-8">
-            <Card>
+            {/* <Card>
                 <CardHeader>
                     <CardTitle className="text-sm font-medium">{t("additionalInfo")}</CardTitle>
                 </CardHeader>
@@ -40,7 +40,7 @@ export function ProjectStats({ project }: ProjectStatsProps) {
                         </div>
                     </div>
                 </CardContent>
-            </Card>
+            </Card> */}
 
             <Card className="bg-primary/5 border-primary/20">
                 <CardHeader className="pb-2">

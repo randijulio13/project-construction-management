@@ -13,7 +13,11 @@ body {
 }
 
 .material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -28,7 +32,6 @@ body {
   background: #3b4554;
   border-radius: 10px;
 }
-
 
 :root {
   --radius: 0.5rem;
@@ -66,7 +69,6 @@ body {
   --sidebar-ring: #136dec;
 }
 
-
 .dark {
   --background: #101822;
   --foreground: #f8fafc;
@@ -100,9 +102,7 @@ body {
   --sidebar-accent-foreground: #f8fafc;
   --sidebar-border: #1e293b;
   --sidebar-ring: #136dec;
-
 }
-
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -152,4 +152,52 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.interactive-svg-wrapper svg {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  display: block;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+}
+
+.interactive-svg-wrapper path,
+.interactive-svg-wrapper rect,
+.interactive-svg-wrapper polygon,
+.interactive-svg-wrapper circle,
+.interactive-svg-wrapper ellipse,
+.interactive-svg-wrapper polyline {
+  transition: all 0.2s ease;
+  pointer-events: all;
+}
+
+.interactive-svg-wrapper path:hover,
+.interactive-svg-wrapper rect:hover,
+.interactive-svg-wrapper polygon:hover,
+.interactive-svg-wrapper circle:hover,
+.interactive-svg-wrapper ellipse:hover,
+.interactive-svg-wrapper polyline:hover {
+  cursor: default;
+  filter: brightness(1.1);
+  stroke: hsl(var(--primary));
+  stroke-width: 2px;
+}
+
+.interactive-svg-wrapper [data-unit-id] {
+  fill: hsl(var(--primary)) !important;
+  fill-opacity: 0.4;
+  stroke: hsl(var(--primary));
+  stroke-width: 1px;
+}
+
+.interactive-svg-wrapper .hovered {
+  filter: brightness(1.2) saturate(1.2);
+  stroke: hsl(var(--primary)) !important;
+  stroke-width: 3px !important;
+  fill-opacity: 0.8 !important;
+}
+
+.siteplan-image {
+  pointer-events: none;
 }

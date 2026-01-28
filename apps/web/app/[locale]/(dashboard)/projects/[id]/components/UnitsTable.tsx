@@ -20,12 +20,15 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { ProjectUnit } from "@construction/shared";
+import { AddUnitForm } from "./AddUnitForm";
 
 interface UnitsTableProps {
+    projectId: number;
+    siteplan: string | null;
     units: ProjectUnit[];
 }
 
-export function UnitsTable({ units }: UnitsTableProps) {
+export function UnitsTable({ projectId, siteplan, units }: UnitsTableProps) {
     const t = useTranslations("projects");
 
     return (
@@ -38,10 +41,11 @@ export function UnitsTable({ units }: UnitsTableProps) {
                     </CardTitle>
                     <CardDescription>{t("unitsSubtitle")}</CardDescription>
                 </div>
-                <Button size="sm" variant="outline" className="gap-2">
-                    <Plus className="size-4" />
-                    {t("addUnit")}
-                </Button>
+                <AddUnitForm
+                    projectId={projectId}
+                    siteplan={siteplan}
+                    units={units}
+                />
             </CardHeader>
             <CardContent>
                 <div className="border rounded-lg overflow-hidden">

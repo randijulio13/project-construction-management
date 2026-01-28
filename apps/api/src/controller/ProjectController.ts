@@ -196,6 +196,7 @@ export class ProjectController {
       unit.name = name;
       unit.blockNumber = blockNumber;
       unit.unitType = unitType;
+      unit.landArea = req.body.landArea || 0;
       unit.siteplanSelector = siteplanSelector;
       unit.project = project;
 
@@ -219,6 +220,7 @@ export class ProjectController {
       unit.name = name ?? unit.name;
       unit.blockNumber = blockNumber ?? unit.blockNumber;
       unit.unitType = unitType ?? unit.unitType;
+      unit.landArea = req.body.landArea ?? unit.landArea;
       unit.siteplanSelector =
         siteplanSelector !== undefined
           ? siteplanSelector

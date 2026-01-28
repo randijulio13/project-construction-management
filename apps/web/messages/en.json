@@ -83,7 +83,11 @@
     "noUnitAssigned": "No Unit Assigned",
     "confirmAssignment": "Confirm Assignment",
     "manageAssignments": "Manage Unit Assignments",
-    "timeline": "Timeline"
+    "timeline": "Timeline",
+    "selectAreaOnSiteplan": "Select Area on Siteplan",
+    "landArea": "Land Area",
+    "saveUnit": "Save Unit",
+    "noSiteplanAvailable": "No Siteplan Available."
   },
   "profile": {
     "title": "Profile",

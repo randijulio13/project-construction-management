@@ -83,7 +83,11 @@
     "noUnitAssigned": "Tidak Ada Unit Terhubung",
     "confirmAssignment": "Konfirmasi Hubungan",
     "manageAssignments": "Kelola Hubungan Unit",
-    "timeline": "Timeline"
+    "timeline": "Timeline",
+    "selectAreaOnSiteplan": "Pilih Area di Siteplan",
+    "landArea": "Luas Lahan",
+    "saveUnit": "Simpan Unit",
+    "noSiteplanAvailable": "Siteplan tidak tersedia."
   },
   "profile": {
     "title": "Profil",

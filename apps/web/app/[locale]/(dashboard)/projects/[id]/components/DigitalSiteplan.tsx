@@ -278,56 +278,6 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
                         </div>
                     )}
                 </div>
-
-                <style jsx global>{`
-                    .interactive-svg-wrapper svg {
-                        width: 100%;
-                        height: auto;
-                        max-height: 80vh;
-                        display: block;
-                        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
-                    }
-                    
-                    .interactive-svg-wrapper path,
-                    .interactive-svg-wrapper rect,
-                    .interactive-svg-wrapper polygon,
-                    .interactive-svg-wrapper circle,
-                    .interactive-svg-wrapper ellipse,
-                    .interactive-svg-wrapper polyline {
-                        transition: all 0.2s ease;
-                        pointer-events: all;
-                    }
-
-                    .interactive-svg-wrapper path:hover,
-                    .interactive-svg-wrapper rect:hover,
-                    .interactive-svg-wrapper polygon:hover,
-                    .interactive-svg-wrapper circle:hover,
-                    .interactive-svg-wrapper ellipse:hover,
-                    .interactive-svg-wrapper polyline:hover {
-                        cursor: default;
-                        filter: brightness(1.1);
-                        stroke: hsl(var(--primary));
-                        stroke-width: 2px;
-                    }
-
-                    .interactive-svg-wrapper [data-unit-id] {
-                        fill: hsl(var(--primary)) !important;
-                        fill-opacity: 0.4;
-                        stroke: hsl(var(--primary));
-                        stroke-width: 1px;
-                    }
-
-                    .interactive-svg-wrapper .hovered {
-                        filter: brightness(1.2) saturate(1.2);
-                        stroke: hsl(var(--primary)) !important;
-                        stroke-width: 3px !important;
-                        fill-opacity: 0.8 !important;
-                    }
-
-                    .siteplan-image {
-                        pointer-events: none;
-                    }
-                `}</style>
             </CardContent>
         </Card>
     );

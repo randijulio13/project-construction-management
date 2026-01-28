@@ -82,7 +82,11 @@ export default function ProjectDetailsPage({
                         siteplan={project.siteplan ? `${API_URL}${project.siteplan}` : null}
                         units={project.units || []}
                     />
-                    <UnitsTable units={project.units || []} />
+                    <UnitsTable
+                        projectId={project.id}
+                        siteplan={project.siteplan ? `${API_URL}${project.siteplan}` : null}
+                        units={project.units || []}
+                    />
                     <DocumentsList documents={project.documents || []} />
                 </div>
 

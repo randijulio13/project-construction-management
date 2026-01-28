@@ -238,11 +238,6 @@ export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSit
         <Card className="border-none shadow-sm bg-card/60 backdrop-blur-sm overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href={backPath}>
-                            <ArrowLeft className="size-5" />
-                        </Link>
-                    </Button>
                     <div>
                         <CardTitle className="text-xl flex items-center gap-2">
                             <Layout className="size-5 text-primary" />
@@ -329,51 +324,7 @@ export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSit
                     </DialogContent>
                 </Dialog>
 
-                <style jsx global>{`
-                    .interactive-svg-wrapper svg {
-                        width: 100%;
-                        height: auto;
-                        max-height: 85vh;
-                        display: block;
-                        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
-                    }
-                    
-                    .interactive-svg-wrapper path,
-                    .interactive-svg-wrapper rect,
-                    .interactive-svg-wrapper polygon,
-                    .interactive-svg-wrapper circle,
-                    .interactive-svg-wrapper ellipse,
-                    .interactive-svg-wrapper polyline {
-                        transition: all 0.2s ease;
-                        pointer-events: all;
-                    }
 
-                    .interactive-svg-wrapper path:hover,
-                    .interactive-svg-wrapper rect:hover,
-                    .interactive-svg-wrapper polygon:hover,
-                    .interactive-svg-wrapper circle:hover,
-                    .interactive-svg-wrapper ellipse:hover,
-                    .interactive-svg-wrapper polyline:hover {
-                        cursor: pointer;
-                        filter: brightness(1.1);
-                        stroke: hsl(var(--primary));
-                        stroke-width: 2px;
-                    }
-
-                    .interactive-svg-wrapper [data-unit-id] {
-                        fill: hsl(var(--primary)) !important;
-                        fill-opacity: 0.4;
-                        stroke: hsl(var(--primary));
-                        stroke-width: 1px;
-                    }
-
-                    .interactive-svg-wrapper .hovered {
-                        filter: brightness(1.2) saturate(1.2);
-                        stroke: hsl(var(--primary)) !important;
-                        stroke-width: 3px !important;
-                        fill-opacity: 0.8 !important;
-                    }
-                `}</style>
             </CardContent>
         </Card>
     );

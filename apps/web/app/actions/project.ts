@@ -76,3 +76,21 @@ export async function updateUnit(projectId: string, unitId: string, data: any) {
     return { success: false, error: errorMessage };
   }
 }
+
+export async function createProjectUnit(projectId: string, data: any) {
+  try {
+    const result = await fetchApi<any>(`/projects/${projectId}/units`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    return { success: true, data: result };
+  } catch (error) {
+    console.error(
+      `Error in createProjectUnit action for project ${projectId}:`,
+      error,
+    );
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+    return { success: false, error: errorMessage };
+  }
+}
