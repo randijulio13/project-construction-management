@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+import { API_URL } from "./constants";
 
 type FetchOptions = RequestInit & {
   params?: Record<string, string>;
@@ -13,7 +13,7 @@ type FetchOptions = RequestInit & {
  */
 export async function fetchApi<T = unknown>(
   endpoint: string,
-  options: FetchOptions = {}
+  options: FetchOptions = {},
 ): Promise<T> {
   const { params, headers, revalidate, ...rest } = options;
 
@@ -48,7 +48,10 @@ export async function fetchApi<T = unknown>(
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    const errorMessage = errorData.message || errorData.error || `Request failed with status ${response.status}`;
+    const errorMessage =
+      errorData.message ||
+      errorData.error ||
+      `Request failed with status ${response.status}`;
     throw new Error(errorMessage);
   }
 

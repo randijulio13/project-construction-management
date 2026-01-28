@@ -41,6 +41,9 @@ export class Project {
   @Column({ nullable: true })
   logo?: string;
 
+  @Column({ nullable: true })
+  siteplan?: string;
+
   @OneToMany(() => ProjectDocument, (document) => document.project)
   documents!: ProjectDocument[];
 

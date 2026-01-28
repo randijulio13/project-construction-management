@@ -32,3 +32,29 @@ export async function createProject(data: CreateProjectOutput | FormData) {
     return { success: false, error: errorMessage };
   }
 }
+
+export async function getProjectById(id: string): Promise<Project | null> {
+  try {
+    return await fetchApi<Project>(`/projects/${id}`, {
+      revalidate: 0,
+    });
+  } catch (error) {
+    console.error(`Error in getProjectById action for ID ${id}:`, error);
+    return null;
+  }
+}
+
+export async function updateProjectSiteplan(id: string, formData: FormData) {
+  try {
+    const result = await fetchApi<Project>(`/projects/${id}`, {
+      method: "PUT",
+      body: formData,
+    });
+    return { success: true, data: result };
+  } catch (error) {
+    console.error(`Error in updateProjectSiteplan action for ID ${id}:`, error);
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+    return { success: false, error: errorMessage };
+  }
+}

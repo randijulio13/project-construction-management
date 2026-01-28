@@ -22,6 +22,7 @@ export const createProjectSchema = z.object({
       return undefined;
     }),
   logo: z.string().optional(),
+  siteplan: z.string().optional(),
 });
 
 export type CreateProjectInput = z.input<typeof createProjectSchema>;

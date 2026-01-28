@@ -55,6 +55,7 @@ export class ProjectController {
         latitude,
         longitude,
         logo,
+        siteplan,
       }: CreateProjectRequest = req.body;
 
       const project = new ProjectEntity();
@@ -67,11 +68,20 @@ export class ProjectController {
       project.latitude = latitude;
       project.longitude = longitude;
 
-      // If file was uploaded via multer, use that path
-      if (req.file) {
-        project.logo = `/uploads/${req.file.filename}`;
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+      // Handle logo
+      if (files?.logo?.[0]) {
+        project.logo = `/uploads/${files.logo[0].filename}`;
       } else {
         project.logo = logo;
+      }
+
+      // Handle siteplan
+      if (files?.siteplan?.[0]) {
+        project.siteplan = `/uploads/${files.siteplan[0].filename}`;
+      } else {
+        project.siteplan = siteplan;
       }
 
       await projectRepository.save(project);
@@ -94,6 +104,7 @@ export class ProjectController {
         latitude,
         longitude,
         logo,
+        siteplan,
       }: UpdateProjectRequest = req.body;
 
       const project = await projectRepository.findOneBy({ id: parseInt(id) });
@@ -110,10 +121,20 @@ export class ProjectController {
       project.latitude = latitude ?? project.latitude;
       project.longitude = longitude ?? project.longitude;
 
-      if (req.file) {
-        project.logo = `/uploads/${req.file.filename}`;
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+      // Handle logo
+      if (files?.logo?.[0]) {
+        project.logo = `/uploads/${files.logo[0].filename}`;
       } else if (logo !== undefined) {
         project.logo = logo;
+      }
+
+      // Handle siteplan
+      if (files?.siteplan?.[0]) {
+        project.siteplan = `/uploads/${files.siteplan[0].filename}`;
+      } else if (siteplan !== undefined) {
+        project.siteplan = siteplan;
       }
 
       await projectRepository.save(project);

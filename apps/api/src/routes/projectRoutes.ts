@@ -26,8 +26,22 @@ router.use(authMiddleware);
 
 router.get("/", ProjectController.getAll);
 router.get("/:id", ProjectController.getOne);
-router.post("/", upload.single("logo"), ProjectController.create);
-router.put("/:id", upload.single("logo"), ProjectController.update);
+router.post(
+  "/",
+  upload.fields([
+    { name: "logo", maxCount: 1 },
+    { name: "siteplan", maxCount: 1 },
+  ]),
+  ProjectController.create,
+);
+router.put(
+  "/:id",
+  upload.fields([
+    { name: "logo", maxCount: 1 },
+    { name: "siteplan", maxCount: 1 },
+  ]),
+  ProjectController.update,
+);
 router.delete("/:id", ProjectController.delete);
 
 // Sub-resources

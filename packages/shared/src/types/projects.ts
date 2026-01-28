@@ -9,6 +9,7 @@ export interface Project {
   latitude?: number;
   longitude?: number;
   logo?: string;
+  siteplan?: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -23,6 +24,7 @@ export interface CreateProjectRequest {
   latitude?: number;
   longitude?: number;
   logo?: string;
+  siteplan?: string;
 }
 
 export interface UpdateProjectRequest extends Partial<CreateProjectRequest> {}
