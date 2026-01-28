@@ -161,13 +161,6 @@ export function ProjectForm() {
                                 {errors.address && <p className="text-xs text-destructive font-medium">{tVal(errors.address.message as string)}</p>}
                             </div>
 
-                            <div className="space-y-2 col-span-full">
-                                <label className="text-sm font-medium">{t("description")}</label>
-                                <Textarea
-                                    {...register("description")}
-                                    placeholder={t("descriptionPlaceholder")}
-                                />
-                            </div>
 
                             <div className="space-y-3 col-span-full">
                                 <label className="text-sm font-medium">{t("location")}</label>

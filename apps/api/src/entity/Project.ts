@@ -20,9 +20,6 @@ export class Project {
   @Column("text")
   address!: string;
 
-  @Column("text", { nullable: true })
-  description?: string;
-
   @Column({ default: "Draft" })
   status!: string;
 

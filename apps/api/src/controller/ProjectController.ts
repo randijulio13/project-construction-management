@@ -48,7 +48,6 @@ export class ProjectController {
       const {
         name,
         address,
-        description,
         status,
         startDate,
         endDate,
@@ -61,7 +60,6 @@ export class ProjectController {
       const project = new ProjectEntity();
       project.name = name;
       project.address = address;
-      project.description = description;
       project.status = status || "Draft";
       project.startDate = startDate ? new Date(startDate) : undefined;
       project.endDate = endDate ? new Date(endDate) : undefined;
@@ -97,7 +95,6 @@ export class ProjectController {
       const {
         name,
         address,
-        description,
         status,
         startDate,
         endDate,
@@ -114,7 +111,6 @@ export class ProjectController {
 
       project.name = name ?? project.name;
       project.address = address ?? project.address;
-      project.description = description ?? project.description;
       project.status = status ?? project.status;
       project.startDate = startDate ? new Date(startDate) : project.startDate;
       project.endDate = endDate ? new Date(endDate) : project.endDate;
@@ -185,7 +181,7 @@ export class ProjectController {
   static addUnit = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { name, blockNumber, unitType, siteplanSelector } = req.body;
+      const { blockNumber, unitType, siteplanSelector } = req.body;
 
       const project = await projectRepository.findOneBy({ id: parseInt(id) });
       if (!project) {
@@ -193,7 +189,6 @@ export class ProjectController {
       }
 
       const unit = new UnitEntity();
-      unit.name = name;
       unit.blockNumber = blockNumber;
       unit.unitType = unitType;
       unit.landArea = req.body.landArea || 0;
@@ -210,14 +205,13 @@ export class ProjectController {
   static updateUnit = async (req: Request, res: Response) => {
     try {
       const { unitId } = req.params;
-      const { name, blockNumber, unitType, siteplanSelector } = req.body;
+      const { blockNumber, unitType, siteplanSelector } = req.body;
 
       const unit = await unitRepository.findOneBy({ id: parseInt(unitId) });
       if (!unit) {
         return res.status(404).json({ message: "Unit not found" });
       }
 
-      unit.name = name ?? unit.name;
       unit.blockNumber = blockNumber ?? unit.blockNumber;
       unit.unitType = unitType ?? unit.unitType;
       unit.landArea = req.body.landArea ?? unit.landArea;
@@ -230,6 +224,20 @@ export class ProjectController {
       res.json(unit);
     } catch (error) {
       res.status(400).json({ message: "Error updating unit", error });
+    }
+  };
+
+  static getUnitDetail = async (req: Request, res: Response) => {
+    try {
+      const { unitId } = req.params;
+      const unit = await unitRepository.findOneBy({ id: parseInt(unitId) });
+      if (!unit) {
+        return res.status(404).json({ message: "Unit not found" });
+      }
+      res.json(unit);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
     }
   };
 }

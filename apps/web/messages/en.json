@@ -26,8 +26,6 @@
     "namePlaceholder": "Enter project name",
     "address": "Address",
     "addressPlaceholder": "Full project address",
-    "description": "Description",
-    "descriptionPlaceholder": "Optional description",
     "status": "Status",
     "statusPlaceholder": "Select status",
     "statusDraft": "Draft",
@@ -87,7 +85,13 @@
     "selectAreaOnSiteplan": "Select Area on Siteplan",
     "landArea": "Land Area",
     "saveUnit": "Save Unit",
-    "noSiteplanAvailable": "No Siteplan Available."
+    "noSiteplanAvailable": "No Siteplan Available.",
+    "actions": "Actions",
+    "unitDetail": "Unit Detail",
+    "history": "History",
+    "specifications": "Specifications",
+    "noHistory": "No history available yet.",
+    "noSpecs": "No specifications recorded."
   },
   "profile": {
     "title": "Profile",

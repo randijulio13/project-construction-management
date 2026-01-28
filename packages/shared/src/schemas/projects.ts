@@ -3,7 +3,6 @@ import { z } from "zod";
 export const createProjectSchema = z.object({
   name: z.string().min(1, "projectNameRequired"),
   address: z.string().min(1, "projectAddressRequired"),
-  description: z.string().optional(),
   status: z.string().default("Draft"),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
@@ -30,7 +29,6 @@ export type CreateProjectOutput = z.output<typeof createProjectSchema>;
 
 export const createProjectUnitSchema = z.object({
   projectId: z.number(),
-  name: z.string().min(1, "unitNameRequired"),
   blockNumber: z.string().min(1, "blockNumberRequired"),
   unitType: z.string().min(1, "unitTypeRequired"),
   landArea: z.number(),

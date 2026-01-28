@@ -14,9 +14,6 @@ export class ProjectUnit {
   id!: number;
 
   @Column()
-  name!: string;
-
-  @Column()
   blockNumber!: string;
 
   @Column()

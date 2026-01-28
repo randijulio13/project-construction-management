@@ -174,7 +174,7 @@ export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSit
                 if (unitId) {
                     const unit = unitMap.get(unitId);
                     if (unit) {
-                        name = `${unit.name} (${unit.blockNumber})`;
+                        name = unit.blockNumber;
                     }
                 } else if (id === "Area" || !id) {
                     name = t("noUnitAssigned");
@@ -306,7 +306,7 @@ export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSit
                                     <SelectItem value="none">{t("noUnitAssigned")}</SelectItem>
                                     {units.map((unit) => (
                                         <SelectItem key={unit.id} value={unit.id.toString()}>
-                                            {unit.name} ({unit.blockNumber}) - {unit.unitType}
+                                            {unit.blockNumber} - {unit.unitType}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>

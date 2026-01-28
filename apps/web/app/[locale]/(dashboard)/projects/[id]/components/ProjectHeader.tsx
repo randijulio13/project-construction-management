@@ -15,8 +15,9 @@ interface ProjectHeaderProps {
 export function ProjectHeader({ project }: ProjectHeaderProps) {
     const router = useRouter();
 
+    console.log(API_URL, project.logo, `${API_URL}${project.logo}`)
     return (
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 w-full">
             <div className="space-y-3">
                 <div className="flex items-center gap-3">
                     <Button
@@ -37,30 +38,18 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
                             />
                         </div>
                     )}
-                    <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
-                    <Badge variant={project.status === "Active" ? "default" : "secondary"}>
+                    <div className="flex flex-col">
+                        <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
+                        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <MapPin className="size-4" />
+                            {project.address}
+                        </span>
+                    </div>
+                    <Badge variant={project.status === "Active" ? "default" : "secondary"} className="me-4">
                         {project.status}
                     </Badge>
                 </div>
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1.5">
-                        <MapPin className="size-4" />
-                        {project.address}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                        <Calendar className="size-4" />
-                        {project.startDate
-                            ? new Date(project.startDate).toLocaleDateString()
-                            : "-"}{" "}
-                        →{" "}
-                        {project.endDate
-                            ? new Date(project.endDate).toLocaleDateString()
-                            : "-"}
-                    </span>
-                </div>
-                {project.description && (
-                    <p className="text-muted-foreground max-w-2xl">{project.description}</p>
-                )}
+
             </div>
         </div>
     );

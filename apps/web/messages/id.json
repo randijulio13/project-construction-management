@@ -26,8 +26,6 @@
     "namePlaceholder": "Masukkan nama proyek",
     "address": "Alamat",
     "addressPlaceholder": "Alamat lengkap proyek",
-    "description": "Deskripsi",
-    "descriptionPlaceholder": "Keterangan opsional",
     "status": "Status",
     "statusPlaceholder": "Pilih status",
     "statusDraft": "Draft",
@@ -87,7 +85,13 @@
     "selectAreaOnSiteplan": "Pilih Area di Siteplan",
     "landArea": "Luas Lahan",
     "saveUnit": "Simpan Unit",
-    "noSiteplanAvailable": "Siteplan tidak tersedia."
+    "noSiteplanAvailable": "Siteplan tidak tersedia.",
+    "actions": "Aksi",
+    "unitDetail": "Detail Unit",
+    "history": "Riwayat",
+    "specifications": "Spesifikasi",
+    "noHistory": "Belum ada riwayat.",
+    "noSpecs": "Belum ada spesifikasi."
   },
   "profile": {
     "title": "Profil",

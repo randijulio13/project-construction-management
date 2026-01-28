@@ -2,7 +2,6 @@ export interface Project {
   id: number;
   name: string;
   address: string;
-  description?: string;
   status: string;
   startDate?: Date | string;
   endDate?: Date | string;
@@ -17,7 +16,6 @@ export interface Project {
 export interface CreateProjectRequest {
   name: string;
   address: string;
-  description?: string;
   status?: string;
   startDate?: string;
   endDate?: string;
@@ -39,9 +37,9 @@ export interface ProjectDocument {
 
 export interface ProjectUnit {
   id: number;
-  name: string;
   blockNumber: string;
   unitType: string;
+  landArea: number;
   projectId: number;
   siteplanSelector?: string;
 }

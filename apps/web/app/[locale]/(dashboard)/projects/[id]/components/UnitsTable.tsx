@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { Plus, Home } from "lucide-react";
+import { Plus, Home, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/table";
 import { ProjectUnit } from "@construction/shared";
 import { AddUnitForm } from "./AddUnitForm";
+import Link from "next/link";
+import { usePathname } from "@/i18n/routing";
 
 interface UnitsTableProps {
     projectId: number;
@@ -30,6 +32,7 @@ interface UnitsTableProps {
 
 export function UnitsTable({ projectId, siteplan, units }: UnitsTableProps) {
     const t = useTranslations("projects");
+    const pathname = usePathname();
 
     return (
         <Card className="border-none shadow-sm bg-card/60 backdrop-blur-sm">
@@ -52,16 +55,17 @@ export function UnitsTable({ projectId, siteplan, units }: UnitsTableProps) {
                     <Table>
                         <TableHeader className="bg-muted/50">
                             <TableRow>
-                                <TableHead>{t("unitName")}</TableHead>
                                 <TableHead>{t("blockNumber")}</TableHead>
                                 <TableHead>{t("unitType")}</TableHead>
+                                <TableHead>{t("landArea")}</TableHead>
+                                <TableHead className="text-right">{t("actions")}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {units.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={3}
+                                        colSpan={4}
                                         className="h-24 text-center text-muted-foreground"
                                     >
                                         {t("noUnits")}
@@ -70,10 +74,19 @@ export function UnitsTable({ projectId, siteplan, units }: UnitsTableProps) {
                             ) : (
                                 units.map((unit) => (
                                     <TableRow key={unit.id}>
-                                        <TableCell className="font-medium">{unit.name}</TableCell>
-                                        <TableCell>{unit.blockNumber}</TableCell>
+                                        <TableCell className="font-medium">{unit.blockNumber}</TableCell>
                                         <TableCell>
                                             <Badge variant="outline">{unit.unitType}</Badge>
+                                        </TableCell>
+                                        <TableCell className="text-sm">
+                                            {unit.landArea} m²
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Button variant="ghost" size="icon" asChild>
+                                                <Link href={`${pathname}/units/${unit.id}`}>
+                                                    <Eye className="size-4" />
+                                                </Link>
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))

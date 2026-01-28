@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Layout, Upload, FileType, Info, Edit3 } from "lucide-react";
@@ -104,7 +106,7 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
                         // We can also add status classes here if needed
                     }
                 } catch (err) {
-                    console.warn(`Failed to apply unit mapping for unit ${unit.name}:`, err);
+                    console.warn(`Failed to apply unit mapping for unit ${unit.blockNumber}:`, err);
                 }
             }
         });
@@ -126,7 +128,7 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
                 if (unitId) {
                     const unit = unitMap.get(unitId);
                     if (unit) {
-                        name = `${unit.name} (${unit.blockNumber})`;
+                        name = unit.blockNumber;
                     }
                 } else if (id === "Area" || !id) {
                     name = t("noUnitAssigned");

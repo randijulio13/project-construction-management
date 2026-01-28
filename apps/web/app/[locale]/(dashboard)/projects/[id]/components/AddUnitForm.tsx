@@ -1,3 +1,5 @@
+'use client'
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -183,7 +185,7 @@ export function AddUnitForm({ projectId, siteplan, units }: AddUnitFormProps) {
             let name = t("noUnitAssigned");
             if (unitId) {
                 const unit = unitMap.get(unitId);
-                if (unit) name = `${unit.name} (${unit.blockNumber})`;
+                if (unit) name = unit.blockNumber;
             }
 
             setHoveredInfo({ id: unitId || "Area", name });
@@ -284,18 +286,6 @@ export function AddUnitForm({ projectId, siteplan, units }: AddUnitFormProps) {
                         <input type="hidden" {...register("siteplanSelector")} />
 
                         <div className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">{t("unitName")}</label>
-                                <Input
-                                    {...register("name")}
-                                    placeholder="e.g. Unit A12"
-                                    className={cn(errors.name && "border-destructive")}
-                                />
-                                {errors.name && (
-                                    <p className="text-xs text-destructive">{t(errors.name.message as any)}</p>
-                                )}
-                            </div>
-
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">{t("blockNumber")}</label>
