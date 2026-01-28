@@ -29,10 +29,11 @@ import { cn } from "@/lib/utils";
 interface AddUnitFormProps {
     projectId: number;
     siteplan: string | null;
+    siteplanConfig: Record<string, number> | null;
     units: ProjectUnit[];
 }
 
-export function AddUnitForm({ projectId, siteplan, units }: AddUnitFormProps) {
+export function AddUnitForm({ projectId, siteplan, siteplanConfig, units }: AddUnitFormProps) {
     const t = useTranslations("projects");
     const router = useRouter();
     const [open, setOpen] = useState(false);
@@ -44,14 +45,14 @@ export function AddUnitForm({ projectId, siteplan, units }: AddUnitFormProps) {
 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    // Memoize occupied selectors
+    // Memoize occupied selectors from siteplanConfig
     const occupiedSelectors = useMemo(() => {
         const set = new Set<string>();
-        units.forEach(u => {
-            if (u.siteplanSelector) set.add(u.siteplanSelector);
-        });
+        if (siteplanConfig) {
+            Object.keys(siteplanConfig).forEach(selector => set.add(selector));
+        }
         return set;
-    }, [units]);
+    }, [siteplanConfig]);
 
     const unitMap = useMemo(() => {
         const map = new Map<string, ProjectUnit>();
@@ -61,11 +62,14 @@ export function AddUnitForm({ projectId, siteplan, units }: AddUnitFormProps) {
 
     const selectorToUnitMap = useMemo(() => {
         const map = new Map<string, ProjectUnit>();
-        units.forEach(u => {
-            if (u.siteplanSelector) map.set(u.siteplanSelector, u);
-        });
+        if (siteplanConfig) {
+            Object.entries(siteplanConfig).forEach(([selector, unitId]) => {
+                const unit = unitMap.get(unitId.toString());
+                if (unit) map.set(selector, unit);
+            });
+        }
         return map;
-    }, [units]);
+    }, [siteplanConfig, unitMap]);
 
     const {
         register,

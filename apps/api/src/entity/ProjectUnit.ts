@@ -22,9 +22,6 @@ export class ProjectUnit {
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   landArea!: number;
 
-  @Column({ nullable: true })
-  siteplanSelector?: string;
-
   @ManyToOne(() => Project, (project) => project.units)
   project!: Project;
 

@@ -9,6 +9,7 @@ export interface Project {
   longitude?: number;
   logo?: string;
   siteplan?: string;
+  siteplanConfig?: Record<string, number>;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -23,6 +24,7 @@ export interface CreateProjectRequest {
   longitude?: number;
   logo?: string;
   siteplan?: string;
+  siteplanConfig?: Record<string, number>;
 }
 
 export interface UpdateProjectRequest extends Partial<CreateProjectRequest> {}
@@ -41,5 +43,4 @@ export interface ProjectUnit {
   unitType: string;
   landArea: number;
   projectId: number;
-  siteplanSelector?: string;
 }

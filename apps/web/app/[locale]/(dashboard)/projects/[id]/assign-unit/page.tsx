@@ -1,59 +1,28 @@
-"use client";
-
-import { useTranslations } from "next-intl";
-import { useEffect, useState, use } from "react";
+import { getTranslations } from "next-intl/server";
 import { Project, ProjectDocument, ProjectUnit } from "@construction/shared";
 import { getProjectById } from "@/app/actions/project";
 import { API_URL } from "@/lib/constants";
 import { AssignUnitSiteplan } from "../components/AssignUnitSiteplan";
 import { ProjectHeader } from "../components/ProjectHeader";
+import { notFound } from "next/navigation";
 
 interface ProjectWithRelations extends Project {
     documents: ProjectDocument[];
     units: ProjectUnit[];
 }
 
-export default function AssignUnitPage({
+export default async function AssignUnitPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
-    const resolvedParams = use(params);
-    const t = useTranslations("projects");
-    const [project, setProject] = useState<ProjectWithRelations | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const resolvedParams = await params;
+    const t = await getTranslations("projects");
 
-    useEffect(() => {
-        const fetchProject = async () => {
-            try {
-                const data = await getProjectById(resolvedParams.id);
-                if (data) {
-                    setProject(data as ProjectWithRelations);
-                }
-            } catch (error) {
-                console.error("Error fetching project:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchProject();
-    }, [resolvedParams.id]);
-
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <p className="text-muted-foreground animate-pulse">{t("loading")}</p>
-            </div>
-        );
-    }
+    const project = (await getProjectById(resolvedParams.id)) as ProjectWithRelations | null;
 
     if (!project) {
-        return (
-            <div className="p-8 text-center space-y-4">
-                <h2 className="text-xl font-bold">{t("notFound")}</h2>
-            </div>
-        );
+        notFound();
     }
 
     return (
@@ -64,6 +33,7 @@ export default function AssignUnitPage({
                 <AssignUnitSiteplan
                     projectId={project.id}
                     siteplan={project.siteplan ? `${API_URL}${project.siteplan}` : null}
+                    siteplanConfig={project.siteplanConfig || null}
                     units={project.units || []}
                 />
             </div>

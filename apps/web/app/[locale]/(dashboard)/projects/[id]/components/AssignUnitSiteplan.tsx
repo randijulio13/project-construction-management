@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Layout, CheckCheck, Info, ArrowLeft } from "lucide-react";
@@ -25,7 +27,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import { updateUnit } from "@/app/actions/project";
+import { updateProject } from "@/app/actions/project";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ProjectUnit } from "@construction/shared";
@@ -35,10 +37,11 @@ import { usePathname } from "@/i18n/routing";
 interface AssignUnitSiteplanProps {
     projectId: number;
     siteplan: string | null;
+    siteplanConfig: Record<string, number> | null;
     units: ProjectUnit[];
 }
 
-export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSiteplanProps) {
+export function AssignUnitSiteplan({ projectId, siteplan, siteplanConfig, units }: AssignUnitSiteplanProps) {
     const t = useTranslations("projects");
     const router = useRouter();
     const pathname = usePathname();
@@ -63,16 +66,19 @@ export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSit
         return map;
     }, [units]);
 
-    // Reverse map to find unit by selector
+    // Reverse map to find unit by selector (from project config)
     const selectorToUnitMap = useMemo(() => {
         const map = new Map<string, ProjectUnit>();
-        units.forEach(u => {
-            if (u.siteplanSelector) {
-                map.set(u.siteplanSelector, u);
-            }
-        });
+        if (siteplanConfig) {
+            Object.entries(siteplanConfig).forEach(([selector, unitId]) => {
+                const unit = unitMap.get(unitId.toString());
+                if (unit) {
+                    map.set(selector, unit);
+                }
+            });
+        }
         return map;
-    }, [units]);
+    }, [siteplanConfig, unitMap]);
 
     // Fetch SVG content to render inline
     useEffect(() => {
@@ -119,18 +125,18 @@ export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSit
             return;
         }
 
-        // Apply metadata mappings
-        units.forEach(unit => {
-            if (unit.siteplanSelector) {
-                const [tagName, indexStr] = unit.siteplanSelector.split(":");
+        // Apply metadata mappings from siteplanConfig
+        if (siteplanConfig) {
+            Object.entries(siteplanConfig).forEach(([selector, unitId]) => {
+                const [tagName, indexStr] = selector.split(":");
                 const elements = svg.querySelectorAll(tagName);
                 const target = elements[parseInt(indexStr)] as SVGElement;
                 if (target) {
-                    target.setAttribute("data-unit-id", unit.id.toString());
+                    target.setAttribute("data-unit-id", unitId.toString());
                     target.classList.add("mapped-unit");
                 }
-            }
-        });
+            });
+        }
 
         wrapper.appendChild(svg);
 
@@ -200,7 +206,7 @@ export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSit
             wrapper.removeEventListener("mouseover", handleMouseOver);
             wrapper.removeEventListener("mouseout", handleMouseOut);
         };
-    }, [svgContent, unitMap, t, units, selectorToUnitMap]);
+    }, [svgContent, unitMap, t, units, selectorToUnitMap, siteplanConfig]);
 
     const handleAssignUnit = async () => {
         if (!selectedSelector) return;
@@ -209,20 +215,23 @@ export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSit
         setIsModalOpen(false);
 
         try {
-            // Find if any unit currently has this selector and clear it
-            const currentUnitWithSelector = units.find(u => u.siteplanSelector === selectedSelector);
-            if (currentUnitWithSelector && currentUnitWithSelector.id.toString() !== pendingUnitId) {
-                await updateUnit(projectId.toString(), currentUnitWithSelector.id.toString(), {
-                    siteplanSelector: null
+            const newConfig = { ...(siteplanConfig || {}) };
+
+            // Remove unit from any existing selector if it's already assigned somewhere
+            if (pendingUnitId !== "none") {
+                Object.keys(newConfig).forEach(key => {
+                    if (newConfig[key] === parseInt(pendingUnitId)) {
+                        delete newConfig[key];
+                    }
                 });
+                newConfig[selectedSelector] = parseInt(pendingUnitId);
+            } else {
+                delete newConfig[selectedSelector];
             }
 
-            // Assign selector to new unit
-            if (pendingUnitId !== "none") {
-                await updateUnit(projectId.toString(), pendingUnitId, {
-                    siteplanSelector: selectedSelector
-                });
-            }
+            await updateProject(projectId.toString(), {
+                siteplanConfig: newConfig
+            });
 
             router.refresh();
         } catch (error) {
@@ -306,7 +315,7 @@ export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSit
                                     <SelectItem value="none">{t("noUnitAssigned")}</SelectItem>
                                     {units.map((unit) => (
                                         <SelectItem key={unit.id} value={unit.id.toString()}>
-                                            {unit.blockNumber} - {unit.unitType}
+                                            {unit.blockNumber} [ Tipe {unit.unitType} ]
                                         </SelectItem>
                                     ))}
                                 </SelectContent>

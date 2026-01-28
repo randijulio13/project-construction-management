@@ -63,6 +63,25 @@ export async function updateProjectSiteplan(id: string, formData: FormData) {
   }
 }
 
+export async function updateProject(id: string, data: any) {
+  try {
+    const isFormData = data instanceof FormData;
+    const body = isFormData ? data : JSON.stringify(data);
+
+    const result = await fetchApi<Project>(`/projects/${id}`, {
+      method: "PUT",
+      body,
+    });
+
+    return { success: true, data: result };
+  } catch (error) {
+    console.error(`Error in updateProject action for ID ${id}:`, error);
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+    return { success: false, error: errorMessage };
+  }
+}
+
 export async function updateUnit(projectId: string, unitId: string, data: any) {
   try {
     const result = await fetchApi<any>(

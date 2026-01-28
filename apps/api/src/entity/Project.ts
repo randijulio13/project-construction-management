@@ -41,6 +41,9 @@ export class Project {
   @Column({ nullable: true })
   siteplan?: string;
 
+  @Column({ type: "json", nullable: true })
+  siteplanConfig?: Record<string, number>;
+
   @OneToMany(() => ProjectDocument, (document) => document.project)
   documents!: ProjectDocument[];
 

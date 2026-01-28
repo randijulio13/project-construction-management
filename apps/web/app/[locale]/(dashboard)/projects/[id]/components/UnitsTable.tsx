@@ -27,10 +27,11 @@ import { usePathname } from "@/i18n/routing";
 interface UnitsTableProps {
     projectId: number;
     siteplan: string | null;
+    siteplanConfig: Record<string, number> | null;
     units: ProjectUnit[];
 }
 
-export function UnitsTable({ projectId, siteplan, units }: UnitsTableProps) {
+export function UnitsTable({ projectId, siteplan, siteplanConfig, units }: UnitsTableProps) {
     const t = useTranslations("projects");
     const pathname = usePathname();
 
@@ -47,6 +48,7 @@ export function UnitsTable({ projectId, siteplan, units }: UnitsTableProps) {
                 <AddUnitForm
                     projectId={projectId}
                     siteplan={siteplan}
+                    siteplanConfig={siteplanConfig}
                     units={units}
                 />
             </CardHeader>

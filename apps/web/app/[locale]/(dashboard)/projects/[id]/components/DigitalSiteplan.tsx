@@ -22,10 +22,11 @@ import { usePathname } from "@/i18n/routing";
 interface DigitalSiteplanProps {
     projectId: number;
     siteplan: string | null;
+    siteplanConfig: Record<string, number> | null;
     units: ProjectUnit[];
 }
 
-export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanProps) {
+export function DigitalSiteplan({ projectId, siteplan, siteplanConfig, units }: DigitalSiteplanProps) {
     const t = useTranslations("projects");
     const router = useRouter();
     const pathname = usePathname();
@@ -91,25 +92,24 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
             return;
         }
 
-        // Apply metadata mappings from units
-        units.forEach(unit => {
-            if (unit.siteplanSelector) {
+        // Apply metadata mappings from siteplanConfig
+        if (siteplanConfig) {
+            Object.entries(siteplanConfig).forEach(([selector, unitId]) => {
                 try {
-                    const [tagName, indexStr] = unit.siteplanSelector.split(":");
+                    const [tagName, indexStr] = selector.split(":");
                     const index = parseInt(indexStr);
                     const elements = svg.querySelectorAll(tagName);
                     const target = elements[index] as SVGElement;
 
                     if (target) {
-                        target.setAttribute("data-unit-id", unit.id.toString());
+                        target.setAttribute("data-unit-id", unitId.toString());
                         target.classList.add("mapped-unit");
-                        // We can also add status classes here if needed
                     }
                 } catch (err) {
-                    console.warn(`Failed to apply unit mapping for unit ${unit.blockNumber}:`, err);
+                    console.warn(`Failed to apply unit mapping for selector ${selector}:`, err);
                 }
-            }
-        });
+            });
+        }
 
         wrapper.appendChild(svg);
 
@@ -153,7 +153,7 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
             wrapper.removeEventListener("mouseover", handleMouseOver);
             wrapper.removeEventListener("mouseout", handleMouseOut);
         };
-    }, [svgContent, unitMap, t, units]);
+    }, [svgContent, unitMap, t, units, siteplanConfig]);
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
