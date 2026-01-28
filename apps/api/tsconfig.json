@@ -15,6 +15,9 @@
         "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
+            "@construction/shared": [
+                "../../packages/shared/dist"
+            ],
             "*": [
                 "node_modules/*"
             ]
