@@ -43,4 +43,5 @@ export interface ProjectUnit {
   blockNumber: string;
   unitType: string;
   projectId: number;
+  siteplanSelector?: string;
 }

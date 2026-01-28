@@ -82,6 +82,7 @@
     "selectUnit": "Select Unit...",
     "noUnitAssigned": "No Unit Assigned",
     "confirmAssignment": "Confirm Assignment",
+    "manageAssignments": "Manage Unit Assignments",
     "timeline": "Timeline"
   },
   "profile": {

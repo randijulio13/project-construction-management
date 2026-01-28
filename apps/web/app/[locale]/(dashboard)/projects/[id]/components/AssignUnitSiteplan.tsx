@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { Layout, Upload, FileType, Info, Edit3 } from "lucide-react";
+import { Layout, CheckCheck, Info, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -9,37 +9,68 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
-import { updateProjectSiteplan } from "@/app/actions/project";
+import { updateUnit } from "@/app/actions/project";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ProjectUnit } from "@construction/shared";
 import Link from "next/link";
 import { usePathname } from "@/i18n/routing";
 
-interface DigitalSiteplanProps {
+interface AssignUnitSiteplanProps {
     projectId: number;
     siteplan: string | null;
     units: ProjectUnit[];
 }
 
-export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanProps) {
+export function AssignUnitSiteplan({ projectId, siteplan, units }: AssignUnitSiteplanProps) {
     const t = useTranslations("projects");
     const router = useRouter();
     const pathname = usePathname();
-    const [isUploading, setIsUploading] = useState(false);
+    const backPath = pathname.replace("/assign-unit", "");
+
+    const [isSaving, setIsSaving] = useState(false);
     const [svgContent, setSvgContent] = useState<string | null>(null);
     const [isLoadingSvg, setIsLoadingSvg] = useState(false);
     const [hoveredInfo, setHoveredInfo] = useState<{ id: string, name?: string } | null>(null);
-    const [showEditButton, setShowEditButton] = useState(false);
 
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    // Modal state
+    const [selectedSelector, setSelectedSelector] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [pendingUnitId, setPendingUnitId] = useState<string>("");
+
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     // Memoize unit map for quick lookup
     const unitMap = useMemo(() => {
         const map = new Map<string, ProjectUnit>();
         units.forEach(u => map.set(u.id.toString(), u));
+        return map;
+    }, [units]);
+
+    // Reverse map to find unit by selector
+    const selectorToUnitMap = useMemo(() => {
+        const map = new Map<string, ProjectUnit>();
+        units.forEach(u => {
+            if (u.siteplanSelector) {
+                map.set(u.siteplanSelector, u);
+            }
+        });
         return map;
     }, [units]);
 
@@ -77,9 +108,8 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
         const wrapper = wrapperRef.current;
         if (!wrapper || !svgContent) return;
 
-        // Clean up wrapper before re-injecting
+        // Clean up and inject
         wrapper.innerHTML = "";
-
         const parser = new DOMParser();
         const doc = parser.parseFromString(svgContent, "image/svg+xml");
         const svg = doc.querySelector("svg");
@@ -89,32 +119,50 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
             return;
         }
 
-        // Apply metadata mappings from units
+        // Apply metadata mappings
         units.forEach(unit => {
             if (unit.siteplanSelector) {
-                try {
-                    const [tagName, indexStr] = unit.siteplanSelector.split(":");
-                    const index = parseInt(indexStr);
-                    const elements = svg.querySelectorAll(tagName);
-                    const target = elements[index] as SVGElement;
-
-                    if (target) {
-                        target.setAttribute("data-unit-id", unit.id.toString());
-                        target.classList.add("mapped-unit");
-                        // We can also add status classes here if needed
-                    }
-                } catch (err) {
-                    console.warn(`Failed to apply unit mapping for unit ${unit.name}:`, err);
+                const [tagName, indexStr] = unit.siteplanSelector.split(":");
+                const elements = svg.querySelectorAll(tagName);
+                const target = elements[parseInt(indexStr)] as SVGElement;
+                if (target) {
+                    target.setAttribute("data-unit-id", unit.id.toString());
+                    target.classList.add("mapped-unit");
                 }
             }
         });
 
         wrapper.appendChild(svg);
 
+        const handleClick = (e: MouseEvent) => {
+            let target = e.target as SVGElement;
+            const graphicTagNames = ['path', 'rect', 'polygon', 'circle', 'ellipse', 'polyline'];
+            const tagName = target.tagName.toLowerCase();
+            if (!graphicTagNames.includes(tagName)) return;
+
+            // Calculate selector: tag:index
+            const elements = svg.querySelectorAll(tagName);
+            let index = -1;
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i] === target) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index === -1) return;
+
+            const selector = `${tagName}:${index}`;
+            const existingUnit = selectorToUnitMap.get(selector);
+
+            setPendingUnitId(existingUnit ? existingUnit.id.toString() : "none");
+            setSelectedSelector(selector);
+            setIsModalOpen(true);
+        };
+
         const handleMouseOver = (e: MouseEvent) => {
             const target = e.target as SVGElement;
             if (target instanceof SVGElement) {
-                setShowEditButton(true);
                 const graphicTagNames = ['path', 'rect', 'polygon', 'circle', 'ellipse', 'polyline'];
                 if (!graphicTagNames.includes(target.tagName.toLowerCase())) return;
 
@@ -141,83 +189,76 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
                 target.classList.remove("hovered");
                 setHoveredInfo(null);
             }
-            setShowEditButton(false);
         };
 
+        wrapper.addEventListener("click", handleClick);
         wrapper.addEventListener("mouseover", handleMouseOver);
         wrapper.addEventListener("mouseout", handleMouseOut);
 
         return () => {
+            wrapper.removeEventListener("click", handleClick);
             wrapper.removeEventListener("mouseover", handleMouseOver);
             wrapper.removeEventListener("mouseout", handleMouseOut);
         };
-    }, [svgContent, unitMap, t, units]);
+    }, [svgContent, unitMap, t, units, selectorToUnitMap]);
 
-    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+    const handleAssignUnit = async () => {
+        if (!selectedSelector) return;
 
-        if (file.type !== "image/svg+xml") {
-            alert(t("onlySvg"));
-            return;
-        }
+        setIsSaving(true);
+        setIsModalOpen(false);
 
-        setIsUploading(true);
-        const formData = new FormData();
-        formData.append("siteplan", file);
+        try {
+            // Find if any unit currently has this selector and clear it
+            const currentUnitWithSelector = units.find(u => u.siteplanSelector === selectedSelector);
+            if (currentUnitWithSelector && currentUnitWithSelector.id.toString() !== pendingUnitId) {
+                await updateUnit(projectId.toString(), currentUnitWithSelector.id.toString(), {
+                    siteplanSelector: null
+                });
+            }
 
-        const result = await updateProjectSiteplan(projectId.toString(), formData);
-        setIsUploading(false);
+            // Assign selector to new unit
+            if (pendingUnitId !== "none") {
+                await updateUnit(projectId.toString(), pendingUnitId, {
+                    siteplanSelector: selectedSelector
+                });
+            }
 
-        if (result.success) {
             router.refresh();
-        } else {
-            alert(result.error || "Upload failed");
+        } catch (error) {
+            console.error("Error saving mapping:", error);
+            alert("Error saving mapping");
+        } finally {
+            setIsSaving(false);
+            setSelectedSelector(null);
         }
     };
 
     return (
         <Card className="border-none shadow-sm bg-card/60 backdrop-blur-sm overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <div>
-                    <CardTitle className="text-xl flex items-center gap-2">
-                        <Layout className="size-5 text-primary" />
-                        {t("siteplan")}
-                    </CardTitle>
-                    <CardDescription>
-                        {hoveredInfo ? (
-                            <span className="text-primary font-medium flex items-center gap-1.5">
-                                <Info className="size-3.5" />
-                                {hoveredInfo.name || hoveredInfo.id}
-                            </span>
-                        ) : (
-                            t("siteplanSubtitle")
-                        )}
-                    </CardDescription>
-                </div>
-                <div className="flex gap-2">
-                    <input
-                        type="file"
-                        accept=".svg"
-                        className="hidden"
-                        ref={fileInputRef}
-                        onChange={handleUpload}
-                    />
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        className="gap-2"
-                        disabled={isUploading}
-                        onClick={() => fileInputRef.current?.click()}
-                    >
-                        {isUploading ? (
-                            <Upload className="size-4 animate-bounce" />
-                        ) : (
-                            <FileType className="size-4" />
-                        )}
-                        {siteplan ? t("changeSiteplan") : t("uploadSiteplan")}
+                <div className="flex items-center gap-4">
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href={backPath}>
+                            <ArrowLeft className="size-5" />
+                        </Link>
                     </Button>
-
+                    <div>
+                        <CardTitle className="text-xl flex items-center gap-2">
+                            <Layout className="size-5 text-primary" />
+                            {t("manageAssignments")}
+                        </CardTitle>
+                        <CardDescription>
+                            {hoveredInfo ? (
+                                <span className="text-primary font-medium flex items-center gap-1.5">
+                                    <Info className="size-3.5" />
+                                    {hoveredInfo.name || hoveredInfo.id}
+                                </span>
+                            ) : (
+                                t("assignUnitSubtitle")
+                            )}
+                        </CardDescription>
+                    </div>
                 </div>
             </CardHeader>
             <CardContent>
@@ -227,18 +268,6 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
                         hoveredInfo && "ring-1 ring-primary/20 bg-muted/50"
                     )}
                 >
-                    {siteplan && (
-                        <Button
-                            size="sm"
-                            variant="secondary"
-                            className={cn("gap-2 absolute bottom-4 right-4 z-50 group-hover:opacity-100 opacity-0 duration-300")}
-                            asChild
-                        >
-                            <Link href={`${pathname}/assign-unit`}>
-                                <Edit3 className="size-4" />
-                            </Link>
-                        </Button>
-                    )}
                     {svgContent ? (
                         <div
                             ref={wrapperRef}
@@ -250,40 +279,61 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
                             <p className="text-sm font-medium animate-pulse">Rendering Siteplan...</p>
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center gap-4 text-muted-foreground p-8 text-center">
-                            <div className="size-16 rounded-full bg-muted flex items-center justify-center">
-                                <Layout className="size-8 opacity-20" />
-                            </div>
-                            <div className="space-y-1">
-                                <p className="font-medium">{t("noSiteplan")}</p>
-                                <p className="text-xs">{t("onlySvg")}</p>
-                            </div>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="mt-2"
-                                onClick={() => fileInputRef.current?.click()}
-                            >
-                                {t("uploadSiteplan")}
-                            </Button>
+                        <div className="p-8 text-center text-muted-foreground">
+                            {t("noSiteplan")}
                         </div>
                     )}
 
-                    {isUploading && (
+                    {isSaving && (
                         <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px] flex items-center justify-center z-10">
                             <div className="flex flex-col items-center gap-2">
                                 <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                                <p className="text-sm font-medium animate-pulse">{t("uploading")}</p>
+                                <p className="text-sm font-medium animate-pulse">{t("saving")}</p>
                             </div>
                         </div>
                     )}
                 </div>
 
+                <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                    <DialogContent className="w-[400px]">
+                        <DialogHeader>
+                            <DialogTitle>{t("assignUnit")}</DialogTitle>
+                            <DialogDescription>
+                                {t("assignUnitSubtitle")}
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="py-4">
+                            <Select value={pendingUnitId} onValueChange={setPendingUnitId}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder={t("selectUnit")} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none">{t("noUnitAssigned")}</SelectItem>
+                                    {units.map((unit) => (
+                                        <SelectItem key={unit.id} value={unit.id.toString()}>
+                                            {unit.name} ({unit.blockNumber}) - {unit.unitType}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                                {t("cancel")}
+                            </Button>
+                            <Button onClick={handleAssignUnit} disabled={isSaving}>
+                                <CheckCheck className="size-4 mr-2" />
+                                {t("confirmAssignment")}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
                 <style jsx global>{`
                     .interactive-svg-wrapper svg {
                         width: 100%;
                         height: auto;
-                        max-height: 80vh;
+                        max-height: 85vh;
                         display: block;
                         filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
                     }
@@ -304,7 +354,7 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
                     .interactive-svg-wrapper circle:hover,
                     .interactive-svg-wrapper ellipse:hover,
                     .interactive-svg-wrapper polyline:hover {
-                        cursor: default;
+                        cursor: pointer;
                         filter: brightness(1.1);
                         stroke: hsl(var(--primary));
                         stroke-width: 2px;
@@ -322,10 +372,6 @@ export function DigitalSiteplan({ projectId, siteplan, units }: DigitalSiteplanP
                         stroke: hsl(var(--primary)) !important;
                         stroke-width: 3px !important;
                         fill-opacity: 0.8 !important;
-                    }
-
-                    .siteplan-image {
-                        pointer-events: none;
                     }
                 `}</style>
             </CardContent>

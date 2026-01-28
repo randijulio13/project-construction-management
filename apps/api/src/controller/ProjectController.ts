@@ -185,7 +185,7 @@ export class ProjectController {
   static addUnit = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { name, blockNumber, unitType } = req.body;
+      const { name, blockNumber, unitType, siteplanSelector } = req.body;
 
       const project = await projectRepository.findOneBy({ id: parseInt(id) });
       if (!project) {
@@ -196,12 +196,38 @@ export class ProjectController {
       unit.name = name;
       unit.blockNumber = blockNumber;
       unit.unitType = unitType;
+      unit.siteplanSelector = siteplanSelector;
       unit.project = project;
 
       await unitRepository.save(unit);
       res.status(201).json(unit);
     } catch (error) {
       res.status(400).json({ message: "Error adding unit", error });
+    }
+  };
+
+  static updateUnit = async (req: Request, res: Response) => {
+    try {
+      const { unitId } = req.params;
+      const { name, blockNumber, unitType, siteplanSelector } = req.body;
+
+      const unit = await unitRepository.findOneBy({ id: parseInt(unitId) });
+      if (!unit) {
+        return res.status(404).json({ message: "Unit not found" });
+      }
+
+      unit.name = name ?? unit.name;
+      unit.blockNumber = blockNumber ?? unit.blockNumber;
+      unit.unitType = unitType ?? unit.unitType;
+      unit.siteplanSelector =
+        siteplanSelector !== undefined
+          ? siteplanSelector
+          : unit.siteplanSelector;
+
+      await unitRepository.save(unit);
+      res.json(unit);
+    } catch (error) {
+      res.status(400).json({ message: "Error updating unit", error });
     }
   };
 }

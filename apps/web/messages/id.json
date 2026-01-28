@@ -82,6 +82,7 @@
     "selectUnit": "Pilih Unit...",
     "noUnitAssigned": "Tidak Ada Unit Terhubung",
     "confirmAssignment": "Konfirmasi Hubungan",
+    "manageAssignments": "Kelola Hubungan Unit",
     "timeline": "Timeline"
   },
   "profile": {

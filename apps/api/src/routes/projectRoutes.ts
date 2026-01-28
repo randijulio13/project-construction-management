@@ -47,5 +47,6 @@ router.delete("/:id", ProjectController.delete);
 // Sub-resources
 router.post("/:id/documents", ProjectController.addDocument);
 router.post("/:id/units", ProjectController.addUnit);
+router.put("/:id/units/:unitId", ProjectController.updateUnit);
 
 export default router;

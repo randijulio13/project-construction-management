@@ -1,26 +1,36 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from "typeorm";
 import { Project } from "./Project";
 
 @Entity()
 export class ProjectUnit {
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column()
-    name!: string;
+  @Column()
+  name!: string;
 
-    @Column()
-    blockNumber!: string;
+  @Column()
+  blockNumber!: string;
 
-    @Column()
-    unitType!: string;
+  @Column()
+  unitType!: string;
 
-    @ManyToOne(() => Project, (project) => project.units)
-    project!: Project;
+  @Column({ nullable: true })
+  siteplanSelector?: string;
 
-    @CreateDateColumn()
-    createdAt!: Date;
+  @ManyToOne(() => Project, (project) => project.units)
+  project!: Project;
 
-    @UpdateDateColumn()
-    updatedAt!: Date;
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }
