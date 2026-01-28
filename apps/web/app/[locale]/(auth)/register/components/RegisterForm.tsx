@@ -10,6 +10,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, RegisterInput } from "@construction/shared";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
     const tAuth = useTranslations("auth.register");
@@ -18,6 +19,8 @@ export function RegisterForm() {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
+    const router = useRouter();
 
     const {
         register: registerField,
@@ -42,6 +45,9 @@ export function RegisterForm() {
             if (result?.error) {
                 setError(result.error);
                 setIsLoading(false);
+            }
+            if (result?.success) {
+                router.push("/login");
             }
         } catch (err) {
             setError("Something went wrong");

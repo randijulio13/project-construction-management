@@ -92,6 +92,11 @@ export default function ProfilePage() {
         );
     }
 
+    const handleLogout = async () => {
+        await logout();
+        router.push("/login");
+    }
+
     return (
         <main className="flex flex-1 justify-center py-8">
             <div className="layout-content-container flex flex-col max-w-[1200px] w-full px-6 gap-6">
@@ -132,7 +137,7 @@ export default function ProfilePage() {
                                     <Edit2 className="size-5" />
                                     {t("edit")}
                                 </Button>
-                                <form action={logout}>
+                                <form action={handleLogout}>
                                     <Button variant="destructive" className="flex-1 md:flex-none flex items-center justify-center gap-2">
                                         <LogOut className="size-5" />
                                         {commonT("logout")}

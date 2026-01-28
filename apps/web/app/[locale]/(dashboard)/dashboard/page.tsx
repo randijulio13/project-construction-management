@@ -10,14 +10,6 @@ export default function DashboardPage() {
         <PageWrapper>
             <PageHeader
                 title="Dashboard"
-                action={
-                    <form action={logout}>
-                        <Button variant="destructive" className="flex items-center gap-2">
-                            <LogOut className="size-4" />
-                            Logout
-                        </Button>
-                    </form>
-                }
             />
 
             <Card className="bg-card border-border shadow-sm">

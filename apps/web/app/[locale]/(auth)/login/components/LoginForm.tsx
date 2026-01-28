@@ -10,6 +10,7 @@ import { AlertCircleIcon, ArrowRightIcon, EyeIcon, EyeOffIcon, InfoIcon, LockIco
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
+import { useRouter } from "next/navigation";
 
 export function LoginForm() {
     const tAuth = useTranslations("auth.login");
@@ -19,6 +20,8 @@ export function LoginForm() {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
+    const router = useRouter();
 
     const {
         register,
@@ -42,7 +45,11 @@ export function LoginForm() {
                 setError(result.error);
                 setIsLoading(false);
             }
+            if (result?.success) {
+                router.push("/dashboard");
+            }
         } catch (err) {
+            console.log({ error: err })
             setError("Something went wrong");
             setIsLoading(false);
         }
