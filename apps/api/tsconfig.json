@@ -16,7 +16,7 @@
         "baseUrl": ".",
         "paths": {
             "@construction/shared": [
-                "../../packages/shared/dist"
+                "../../packages/shared"
             ],
             "*": [
                 "node_modules/*"

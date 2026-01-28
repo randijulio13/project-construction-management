@@ -24,7 +24,7 @@
     ],
     "paths": {
       "@construction/shared": [
-        "../../packages/shared/dist"
+        "../../packages/shared"
       ],
       "@/*": [
         "./*"
