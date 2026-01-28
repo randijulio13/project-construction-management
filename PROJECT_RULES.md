@@ -64,6 +64,11 @@ Dokumen ini berisi aturan standar pengembangan untuk proyek **Construction Manag
 - Simpan semua server actions di folder `apps/web/app/actions/`.
 - Gunakan server actions untuk menjaga keamanan token dan mempermudah pengelolaan data.
 
+### Data Tables
+
+- **WAJIB** menggunakan library **TanStack Table** (`@tanstack/react-table`) untuk semua komponen tabel yang memiliki fitur sorting, filtering, pagination, atau manajemen state yang kompleks.
+- Gabungkan dengan komponen `Table` dari `components/ui` untuk styling yang konsisten.
+
 ## 3. Backend (API / Express)
 
 ### Backend Architecture

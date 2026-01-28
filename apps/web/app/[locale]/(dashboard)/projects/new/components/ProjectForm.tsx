@@ -82,7 +82,7 @@ export function ProjectForm() {
             const result = await createProject(formData);
 
             if (result.success) {
-                router.push("/projects");
+                router.push(`${result.data?.id}`);
             } else {
                 console.error("Error creating project:", result.error);
                 alert(result.error);

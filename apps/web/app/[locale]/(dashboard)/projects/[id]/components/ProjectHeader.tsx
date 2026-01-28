@@ -31,6 +31,7 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
                     {project.logo && (
                         <div className="relative size-12 rounded-lg overflow-hidden border bg-muted shrink-0">
                             <Image
+                                unoptimized={true}
                                 src={`${API_URL}${project.logo}`}
                                 alt={project.name}
                                 fill

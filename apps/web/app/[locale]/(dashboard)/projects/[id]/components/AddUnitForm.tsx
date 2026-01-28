@@ -91,6 +91,21 @@ export function AddUnitForm({ projectId, siteplan, siteplanConfig, units }: AddU
 
     // ... rest of the component remains the same ...
 
+    // Reset state on close
+    useEffect(() => {
+        if (!open) {
+            setSvgContent(null);
+            setHoveredInfo(null);
+            reset({
+                projectId,
+                landArea: 0,
+                siteplanSelector: null,
+                blockNumber: "",
+                unitType: ""
+            });
+        }
+    }, [open, reset, projectId]);
+
     // Fetch SVG
     useEffect(() => {
         if (!open || !siteplan) return;
