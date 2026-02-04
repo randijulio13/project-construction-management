@@ -56,7 +56,7 @@ export default function Header({ breadcrumbs: manualBreadcrumbs }: HeaderProps) 
                     </SheetTrigger>
                     <SheetContent side="left" className="p-0 w-64">
                         <SheetTitle />
-                        <Sidebar className="w-full border-none h-full" onClick={() => setIsOpenSidebar(false)} />
+                        <Sidebar collapsible={false} className="w-full border-none h-full" onClick={() => setIsOpenSidebar(false)} />
                     </SheetContent>
                 </Sheet>
 

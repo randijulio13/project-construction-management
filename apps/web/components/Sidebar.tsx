@@ -7,7 +7,9 @@ import {
     LayoutDashboard,
     Building2,
     Warehouse, Settings,
-    Construction
+    Construction,
+    PanelLeftClose,
+    PanelLeftOpen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +17,11 @@ import { cn } from "@/lib/utils";
 import { UserSession } from "@construction/shared";
 import { getServerSession } from "@/lib/auth";
 import { useEffect, useState } from "react";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const getNavigation = (t: any) => [
     { name: t("dashboard"), href: "/dashboard", icon: LayoutDashboard },
@@ -37,14 +44,31 @@ const getNavigation = (t: any) => [
 interface SidebarProps {
     className?: string;
     hideLogo?: boolean;
+    collapsible?: boolean;
     onClick?: () => void;
 }
 
-export default function Sidebar({ className, hideLogo = false, onClick }: SidebarProps) {
+export default function Sidebar({ className, hideLogo = false, collapsible = true, onClick }: SidebarProps) {
     const [user, setUser] = useState<UserSession | null>(null);
+    const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+    const [isMounted, setIsMounted] = useState(false);
     const pathname = usePathname();
     const t = useTranslations("common");
     const navigation = getNavigation(t);
+
+    useEffect(() => {
+        setIsMounted(true);
+        const stored = localStorage.getItem("sidebar-collapsed");
+        if (stored) {
+            setIsCollapsed(stored === "true");
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isMounted) {
+            localStorage.setItem("sidebar-collapsed", String(isCollapsed));
+        }
+    }, [isCollapsed, isMounted]);
 
     useEffect(() => {
         const fetchSession = async () => {
@@ -54,20 +78,40 @@ export default function Sidebar({ className, hideLogo = false, onClick }: Sideba
         fetchSession();
     }, []);
 
+    const sidebarCollapsed = !collapsible ? false : isCollapsed;
+
     return (
-        <aside className={cn("w-64 border-r border-border flex flex-col bg-sidebar shrink-0", className)}>
+        <aside className={cn(
+            "border-r border-border flex flex-col bg-sidebar shrink-0 transition-all duration-300 ease-in-out relative",
+            sidebarCollapsed ? "w-[76px]" : "w-64",
+            className
+        )}>
+            {collapsible && (
+                <button
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    className="absolute -right-3 top-10 bg-background border border-border rounded-full size-6 flex items-center justify-center hover:bg-accent transition-all shadow-sm z-50 hidden lg:flex group"
+                >
+                    {sidebarCollapsed ? (
+                        <PanelLeftOpen className="size-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    ) : (
+                        <PanelLeftClose className="size-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    )}
+                </button>
+            )}
             {!hideLogo && (
-                <div className="p-6">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-primary rounded-lg size-10 flex items-center justify-center text-primary-foreground">
+                <div className={cn("p-6", sidebarCollapsed && "px-4")}>
+                    <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="bg-primary rounded-lg size-10 flex items-center justify-center text-primary-foreground shrink-0">
                             <Construction className="size-6" />
                         </div>
-                        <div>
-                            <h1 className="text-base font-bold leading-tight">BluePrint ERP</h1>
-                            <p className="text-muted-foreground text-xs">
-                                Sistem Manajemen Konstruksi
-                            </p>
-                        </div>
+                        {!sidebarCollapsed && (
+                            <div className="transition-opacity duration-300">
+                                <h1 className="text-base font-bold leading-tight truncate">BluePrint ERP</h1>
+                                <p className="text-muted-foreground text-xs truncate">
+                                    Sistem Manajemen Konstruksi
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -78,21 +122,31 @@ export default function Sidebar({ className, hideLogo = false, onClick }: Sideba
 
                     return (
                         <div key={item.name} className="space-y-1">
-                            <Link
-                                onClick={onClick}
-                                href={item.href}
-                                className={cn(
-                                    "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium",
-                                    isActive
-                                        ? "bg-primary/10 text-primary dark:bg-primary/20"
-                                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                            <Tooltip delayDuration={0}>
+                                <TooltipTrigger asChild>
+                                    <Link
+                                        onClick={onClick}
+                                        href={item.href}
+                                        className={cn(
+                                            "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium overflow-hidden",
+                                            isActive
+                                                ? "bg-primary/10 text-primary dark:bg-primary/20"
+                                                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                                            sidebarCollapsed && "justify-center px-0 w-10 mx-auto"
+                                        )}
+                                    >
+                                        <item.icon className={cn("size-5 shrink-0", isActive && "text-primary")} />
+                                        {!sidebarCollapsed && <span className="truncate">{item.name}</span>}
+                                    </Link>
+                                </TooltipTrigger>
+                                {sidebarCollapsed && (
+                                    <TooltipContent side="right">
+                                        {item.name}
+                                    </TooltipContent>
                                 )}
-                            >
-                                <item.icon className={cn("size-4", isActive && "text-primary")} />
-                                <span>{item.name}</span>
-                            </Link>
+                            </Tooltip>
 
-                            {item.children && (isActive || item.children.some(child => pathname === child.href)) && (
+                            {!sidebarCollapsed && item.children && (isActive || item.children.some(child => pathname === child.href)) && (
                                 <div className="ml-9 space-y-1">
                                     {item.children.map((child) => {
                                         const isChildActive = pathname === child.href;
@@ -119,9 +173,9 @@ export default function Sidebar({ className, hideLogo = false, onClick }: Sideba
                 })}
             </nav>
 
-            <div className="p-4 border-t border-border">
-                <div className="flex items-center gap-3 px-2">
-                    <div className="size-8 rounded-full bg-muted overflow-hidden relative">
+            <div className={cn("p-4 border-t border-border", sidebarCollapsed && "px-2")}>
+                <div className={cn("flex items-center gap-3 px-2 overflow-hidden", sidebarCollapsed && "justify-center px-0")}>
+                    <div className="size-8 rounded-full bg-muted overflow-hidden relative shrink-0">
                         <Image
                             className="object-cover"
                             alt={user ? `${user.firstName} ${user.lastName}` : "User"}
@@ -130,17 +184,30 @@ export default function Sidebar({ className, hideLogo = false, onClick }: Sideba
                             sizes="32px"
                         />
                     </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">
-                            {user ? `${user.firstName} ${user.lastName}` : "..."}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                            Administrator
-                        </p>
-                    </div>
-                    <Link href="/account-settings/profile">
-                        <Settings className="size-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" />
-                    </Link>
+                    {!sidebarCollapsed && (
+                        <>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium truncate">
+                                    {user ? `${user.firstName} ${user.lastName}` : "..."}
+                                </p>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                                    Administrator
+                                </p>
+                            </div>
+                            <Tooltip delayDuration={0}>
+                                <TooltipTrigger asChild>
+                                    <Link href="/account-settings/profile">
+                                        <Settings className="size-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" />
+                                    </Link>
+                                </TooltipTrigger>
+                                {sidebarCollapsed && (
+                                    <TooltipContent side="right">
+                                        Profile Settings
+                                    </TooltipContent>
+                                )}
+                            </Tooltip>
+                        </>
+                    )}
                 </div>
             </div>
         </aside>

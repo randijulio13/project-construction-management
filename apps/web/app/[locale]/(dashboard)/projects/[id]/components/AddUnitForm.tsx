@@ -23,7 +23,7 @@ import {
     CreateProjectUnitInput,
     ProjectUnit
 } from "@construction/shared";
-import { createProjectUnit } from "@/app/actions/project";
+import { createProjectUnit, getSiteplanSvg } from "@/app/actions/project";
 import { cn } from "@/lib/utils";
 
 interface AddUnitFormProps {
@@ -129,9 +129,8 @@ export function AddUnitForm({ projectId, siteplan, siteplanConfig, units }: AddU
         const fetchSvg = async () => {
             setIsLoadingSvg(true);
             try {
-                const response = await fetch(`${siteplan}?t=${Date.now()}`);
-                const text = await response.text();
-                if (text.includes("<svg")) {
+                const text = await getSiteplanSvg(`${siteplan}?t=${Date.now()}`);
+                if (text && text.includes("<svg")) {
                     setSvgContent(text);
                 }
             } catch (error) {
