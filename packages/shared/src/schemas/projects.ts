@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ProjectUnitStatus } from "../types/projects";
 
 export const createProjectSchema = z.object({
   name: z.string().min(1, "projectNameRequired"),
@@ -32,7 +33,19 @@ export const createProjectUnitSchema = z.object({
   blockNumber: z.string().min(1, "blockNumberRequired"),
   unitType: z.string().min(1, "unitTypeRequired"),
   landArea: z.number(),
+  buildingArea: z.number().default(0),
+  status: z.nativeEnum(ProjectUnitStatus).default(ProjectUnitStatus.AVAILABLE),
+  price: z.number().default(0),
+  bedrooms: z.number().default(0),
+  bathrooms: z.number().default(0),
+  floors: z.number().default(1),
+  progress: z.number().default(0),
   siteplanSelector: z.string().optional().nullable(),
 });
 
-export type CreateProjectUnitInput = z.infer<typeof createProjectUnitSchema>;
+export type CreateProjectUnitInput = z.input<typeof createProjectUnitSchema>;
+export type CreateProjectUnitOutput = z.output<typeof createProjectUnitSchema>;
+export const updateProjectUnitSchema = createProjectUnitSchema.partial().extend({
+  id: z.number(),
+});
+export type UpdateProjectUnitInput = z.infer<typeof updateProjectUnitSchema>;

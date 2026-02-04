@@ -83,6 +83,12 @@ export function AddUnitForm({ projectId, siteplan, siteplanConfig, units }: AddU
         defaultValues: {
             projectId,
             landArea: 0,
+            buildingArea: 0,
+            price: 0,
+            bedrooms: 0,
+            bathrooms: 0,
+            floors: 1,
+            progress: 0,
             siteplanSelector: null,
         },
     });
@@ -99,6 +105,12 @@ export function AddUnitForm({ projectId, siteplan, siteplanConfig, units }: AddU
             reset({
                 projectId,
                 landArea: 0,
+                buildingArea: 0,
+                price: 0,
+                bedrooms: 0,
+                bathrooms: 0,
+                floors: 1,
+                progress: 0,
                 siteplanSelector: null,
                 blockNumber: "",
                 unitType: ""
@@ -331,17 +343,74 @@ export function AddUnitForm({ projectId, siteplan, siteplanConfig, units }: AddU
                                 </div>
                             </div>
 
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium flex items-center gap-2">
+                                        {t("landArea")}
+                                        <span className="text-[10px] text-muted-foreground">(m²)</span>
+                                    </label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        {...register("landArea", { valueAsNumber: true })}
+                                        className={cn(errors.landArea && "border-destructive")}
+                                    />
+                                    {errors.landArea && (
+                                        <p className="text-xs text-destructive">{t(errors.landArea.message as any)}</p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium flex items-center gap-2">
+                                        {t("buildingArea")}
+                                        <span className="text-[10px] text-muted-foreground">(m²)</span>
+                                    </label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        {...register("buildingArea", { valueAsNumber: true })}
+                                        className={cn(errors.buildingArea && "border-destructive")}
+                                    />
+                                    {errors.buildingArea && (
+                                        <p className="text-xs text-destructive">{t(errors.buildingArea.message as any)}</p>
+                                    )}
+                                </div>
+                            </div>
+
                             <div className="space-y-2">
-                                <label className="text-sm font-medium flex items-start gap-2">{t("landArea")}<pre className="text-xs">m2</pre></label>
+                                <label className="text-sm font-medium">{t("price")}</label>
                                 <Input
                                     type="number"
-                                    step="0.01"
-                                    {...register("landArea", { valueAsNumber: true })}
-                                    className={cn(errors.landArea && "border-destructive")}
+                                    {...register("price", { valueAsNumber: true })}
+                                    className={cn(errors.price && "border-destructive")}
                                 />
-                                {errors.landArea && (
-                                    <p className="text-xs text-destructive">{t(errors.landArea.message as any)}</p>
+                                {errors.price && (
+                                    <p className="text-xs text-destructive">{t(errors.price.message as any)}</p>
                                 )}
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">{t("bedrooms")}</label>
+                                    <Input
+                                        type="number"
+                                        {...register("bedrooms", { valueAsNumber: true })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">{t("bathrooms")}</label>
+                                    <Input
+                                        type="number"
+                                        {...register("bathrooms", { valueAsNumber: true })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">{t("floors")}</label>
+                                    <Input
+                                        type="number"
+                                        {...register("floors", { valueAsNumber: true })}
+                                    />
+                                </div>
                             </div>
                         </div>
 

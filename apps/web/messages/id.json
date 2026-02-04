@@ -91,7 +91,22 @@
     "history": "Riwayat",
     "specifications": "Spesifikasi",
     "noHistory": "Belum ada riwayat.",
-    "noSpecs": "Belum ada spesifikasi."
+    "noSpecs": "Belum ada spesifikasi.",
+    "buildingArea": "Luas Bangunan",
+    "price": "Harga",
+    "bedrooms": "Kamar Tidur",
+    "bathrooms": "Kamar Mandi",
+    "floors": "Lantai",
+    "status_AVAILABLE": "Tersedia",
+    "status_BOOKED": "Dipesan",
+    "status_SOLD": "Terjual",
+    "status_BLOCKED": "Diblokir",
+    "unitAddFailed": "Gagal menambahkan unit.",
+    "constructionProgress": "Progres Konstruksi",
+    "completed": "Selesai",
+    "updateStatus": "Pembaruan Status",
+    "updateProgress": "Pembaruan Progres",
+    "quickActions": "Aksi Cepat"
   },
   "profile": {
     "title": "Profil",

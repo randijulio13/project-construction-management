@@ -15,6 +15,7 @@ import Sidebar from "./Sidebar";
 
 import { usePathname } from "@/i18n/routing";
 import { useState } from "react";
+import { useBreadcrumbContext } from "./BreadcrumbProvider";
 
 export type Breadcrumb = {
     label: string;
@@ -29,14 +30,16 @@ export default function Header({ breadcrumbs: manualBreadcrumbs }: HeaderProps) 
     const t = useTranslations("common");
     const pathname = usePathname();
 
+    const { overrides } = useBreadcrumbContext();
+
     // Generate breadcrumbs from pathname if not provided manually
     const breadcrumbs = manualBreadcrumbs || pathname
         .split("/")
         .filter(Boolean)
         .map((segment, index, array) => {
             const href = "/" + array.slice(0, index + 1).join("/");
-            // Capitalize and format segment for label
-            const label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+            // Use override if available (keyed by path), otherwise capitalize and format segment for label
+            const label = overrides[href] || segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
             return { label, href };
         });
 

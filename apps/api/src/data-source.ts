@@ -4,12 +4,19 @@ import { User } from "./entity/User";
 import { Project } from "./entity/Project";
 import { ProjectDocument } from "./entity/ProjectDocument";
 import { ProjectUnit } from "./entity/ProjectUnit";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 export const AppDataSource = new DataSource({
-  type: "sqlite",
-  database: "database.sqlite",
+  type: "mysql",
+  host: process.env.DB_HOST || "localhost",
+  port: parseInt(process.env.DB_PORT || "3306"),
+  username: process.env.DB_USERNAME || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "construction_db",
   synchronize: true,
-  logging: false,
+  logging: process.env.NODE_ENV === "development",
   entities: [User, Project, ProjectDocument, ProjectUnit],
   migrations: [],
   subscribers: [],

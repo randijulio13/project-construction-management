@@ -199,6 +199,13 @@ export class ProjectController {
       unit.blockNumber = blockNumber;
       unit.unitType = unitType;
       unit.landArea = req.body.landArea || 0;
+      unit.buildingArea = req.body.buildingArea || 0;
+      unit.status = req.body.status || "AVAILABLE";
+      unit.price = req.body.price || 0;
+      unit.bedrooms = req.body.bedrooms || 0;
+      unit.bathrooms = req.body.bathrooms || 0;
+      unit.floors = req.body.floors || 1;
+      unit.progress = req.body.progress || 0;
       unit.project = project;
 
       await unitRepository.save(unit);
@@ -233,6 +240,13 @@ export class ProjectController {
       unit.blockNumber = blockNumber ?? unit.blockNumber;
       unit.unitType = unitType ?? unit.unitType;
       unit.landArea = req.body.landArea ?? unit.landArea;
+      unit.buildingArea = req.body.buildingArea ?? unit.buildingArea;
+      unit.status = req.body.status ?? unit.status;
+      unit.price = req.body.price ?? unit.price;
+      unit.bedrooms = req.body.bedrooms ?? unit.bedrooms;
+      unit.bathrooms = req.body.bathrooms ?? unit.bathrooms;
+      unit.floors = req.body.floors ?? unit.floors;
+      unit.progress = req.body.progress ?? unit.progress;
 
       await unitRepository.save(unit);
 
@@ -269,7 +283,10 @@ export class ProjectController {
   static getUnitDetail = async (req: Request, res: Response) => {
     try {
       const { unitId } = req.params;
-      const unit = await unitRepository.findOneBy({ id: parseInt(unitId) });
+      const unit = await unitRepository.findOne({
+        where: { id: parseInt(unitId) },
+        relations: ["project"],
+      });
       if (!unit) {
         return res.status(404).json({ message: "Unit not found" });
       }

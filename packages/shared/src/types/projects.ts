@@ -27,7 +27,7 @@ export interface CreateProjectRequest {
   siteplanConfig?: Record<string, number>;
 }
 
-export interface UpdateProjectRequest extends Partial<CreateProjectRequest> {}
+export interface UpdateProjectRequest extends Partial<CreateProjectRequest> { }
 
 export interface ProjectDocument {
   id: number;
@@ -37,10 +37,24 @@ export interface ProjectDocument {
   projectId: number;
 }
 
+export enum ProjectUnitStatus {
+  AVAILABLE = "AVAILABLE",
+  BOOKED = "BOOKED",
+  SOLD = "SOLD",
+  BLOCKED = "BLOCKED",
+}
+
 export interface ProjectUnit {
   id: number;
   blockNumber: string;
   unitType: string;
   landArea: number;
+  buildingArea: number;
+  status: ProjectUnitStatus;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  floors: number;
+  progress: number;
   projectId: number;
 }

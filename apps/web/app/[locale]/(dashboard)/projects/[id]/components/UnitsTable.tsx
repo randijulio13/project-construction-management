@@ -59,7 +59,8 @@ export function UnitsTable({ projectId, siteplan, siteplanConfig, units }: Units
                             <TableRow>
                                 <TableHead>{t("blockNumber")}</TableHead>
                                 <TableHead>{t("unitType")}</TableHead>
-                                <TableHead>{t("landArea")}</TableHead>
+                                <TableHead>{t("status")}</TableHead>
+                                <TableHead>{t("progress")}</TableHead>
                                 <TableHead className="text-right">{t("actions")}</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -67,7 +68,7 @@ export function UnitsTable({ projectId, siteplan, siteplanConfig, units }: Units
                             {units.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={4}
+                                        colSpan={5}
                                         className="h-24 text-center text-muted-foreground"
                                     >
                                         {t("noUnits")}
@@ -78,10 +79,35 @@ export function UnitsTable({ projectId, siteplan, siteplanConfig, units }: Units
                                     <TableRow key={unit.id}>
                                         <TableCell className="font-medium">{unit.blockNumber}</TableCell>
                                         <TableCell>
-                                            <Badge variant="outline">{unit.unitType}</Badge>
+                                            <div className="flex flex-col">
+                                                <span className="font-medium">{unit.unitType}</span>
+                                                <span className="text-[10px] text-muted-foreground">
+                                                    LB: {unit.buildingArea} / LT: {unit.landArea} m²
+                                                </span>
+                                            </div>
                                         </TableCell>
-                                        <TableCell className="text-sm">
-                                            {unit.landArea} m²
+                                        <TableCell>
+                                            <Badge
+                                                variant={
+                                                    unit.status === "AVAILABLE" ? "default" :
+                                                        unit.status === "BOOKED" ? "secondary" :
+                                                            unit.status === "SOLD" ? "outline" : "destructive"
+                                                }
+                                                className="text-[10px] font-semibold"
+                                            >
+                                                {t(`status_${unit.status}`)}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex-1 h-1.5 w-16 bg-muted rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-primary transition-all"
+                                                        style={{ width: `${unit.progress}%` }}
+                                                    />
+                                                </div>
+                                                <span className="text-[10px] font-medium">{unit.progress}%</span>
+                                            </div>
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Button variant="ghost" size="icon" asChild>

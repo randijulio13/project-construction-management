@@ -1,12 +1,9 @@
 import { getProjectById, getUnitById } from "@/app/actions/project";
 import { notFound } from "next/navigation";
-import { Home, ChevronRight, Layout, Ruler, Box } from "lucide-react";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getTranslations } from "next-intl/server";
 import { ProjectHeader } from "../../components/ProjectHeader";
 import PageWrapper from "@/components/PageWrapper";
+import { UnitManagement } from "./components/UnitManagement";
+import { BreadcrumbSetter } from "@/components/BreadcrumbSetter";
 
 export default async function UnitDetailPage({
     params,
@@ -14,16 +11,11 @@ export default async function UnitDetailPage({
     params: Promise<{ id: string; unitId: string }>;
 }) {
     const { id, unitId } = await params;
-    const t = await getTranslations("projects");
-    const commonT = await getTranslations("common");
 
-    // Use Promise.all to fetch both project and unit data in parallel
     const [project, unit] = await Promise.all([
         getProjectById(id),
         getUnitById(id, unitId)
     ]);
-
-    console.log({ project, unit })
 
     if (!project || !unit) {
         notFound();
@@ -31,10 +23,14 @@ export default async function UnitDetailPage({
 
     return (
         <PageWrapper>
+            <div className="flex flex-col gap-8 flex-1 overflow-visible">
+                <BreadcrumbSetter path={`/projects/${id}`} label={project.name} />
+                <BreadcrumbSetter path={`/projects/${id}/units/${unitId}`} label={unit.blockNumber} />
 
-            <ProjectHeader project={project} />
+                <ProjectHeader project={project} />
 
-
+                <UnitManagement projectId={id} unit={unit} />
+            </div>
         </PageWrapper>
     );
 }

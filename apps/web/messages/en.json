@@ -91,7 +91,22 @@
     "history": "History",
     "specifications": "Specifications",
     "noHistory": "No history available yet.",
-    "noSpecs": "No specifications recorded."
+    "noSpecs": "No specifications recorded.",
+    "buildingArea": "Building Area",
+    "price": "Price",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "floors": "Floors",
+    "status_AVAILABLE": "Available",
+    "status_BOOKED": "Booked",
+    "status_SOLD": "Sold",
+    "status_BLOCKED": "Blocked",
+    "unitAddFailed": "Failed to add unit.",
+    "constructionProgress": "Construction Progress",
+    "completed": "Completed",
+    "updateStatus": "Update Status",
+    "updateProgress": "Update Progress",
+    "quickActions": "Quick Actions"
   },
   "profile": {
     "title": "Profile",

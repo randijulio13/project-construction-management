@@ -10,6 +10,7 @@ import { DocumentsList } from "./components/DocumentsList";
 import { ProjectStats } from "./components/ProjectStats";
 import { ProjectMap } from "./components/ProjectMap";
 import { DigitalSiteplan } from "./components/DigitalSiteplan";
+import { BreadcrumbSetter } from "@/components/BreadcrumbSetter";
 
 interface ProjectWithRelations extends Project {
     documents: ProjectDocument[];
@@ -30,6 +31,7 @@ export default async function ProjectDetailsPage({
 
     return (
         <div className="p-8 space-y-8 max-w-7xl mx-auto">
+            <BreadcrumbSetter path={`/projects/${id}`} label={project.name} />
             <ProjectHeader project={project} />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
