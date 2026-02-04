@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 
 const getNavigation = (t: any) => [
     { name: t("dashboard"), href: "/dashboard", icon: LayoutDashboard },
+    { name: t("sales"), href: "/sales", icon: Warehouse }, // Using Warehouse as icon for now, will add ShoppingCart
     { name: t("projects"), href: "/projects", icon: Building2 },
     {
         name: t("warehouse"),

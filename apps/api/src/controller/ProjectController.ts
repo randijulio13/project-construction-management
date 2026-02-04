@@ -8,6 +8,8 @@ import {
   CreateProjectRequest,
   UpdateProjectRequest,
   Project as ProjectType,
+  ProjectUnitSalesStatus,
+  ProjectUnitConstructionStatus,
 } from "@construction/shared";
 
 const projectRepository = AppDataSource.getRepository(ProjectEntity);
@@ -202,7 +204,8 @@ export class ProjectController {
       unit.unitType = unitType;
       unit.landArea = req.body.landArea || 0;
       unit.buildingArea = req.body.buildingArea || 0;
-      unit.status = req.body.status || "AVAILABLE";
+      unit.salesStatus = req.body.salesStatus || ProjectUnitSalesStatus.AVAILABLE;
+      unit.constructionStatus = req.body.constructionStatus || ProjectUnitConstructionStatus.NOT_STARTED;
       unit.price = req.body.price || 0;
       unit.bedrooms = req.body.bedrooms || 0;
       unit.bathrooms = req.body.bathrooms || 0;
@@ -243,7 +246,8 @@ export class ProjectController {
       unit.unitType = unitType ?? unit.unitType;
       unit.landArea = req.body.landArea ?? unit.landArea;
       unit.buildingArea = req.body.buildingArea ?? unit.buildingArea;
-      unit.status = req.body.status ?? unit.status;
+      unit.salesStatus = req.body.salesStatus ?? unit.salesStatus;
+      unit.constructionStatus = req.body.constructionStatus ?? unit.constructionStatus;
       unit.price = req.body.price ?? unit.price;
       unit.bedrooms = req.body.bedrooms ?? unit.bedrooms;
       unit.bathrooms = req.body.bathrooms ?? unit.bathrooms;
@@ -257,9 +261,8 @@ export class ProjectController {
           id: unit.project.id,
         });
         if (project) {
-          const config = project.siteplanConfig || {};
-
-          // Remove previous assignment for this unit if any
+          // Update siteplan config if it was previously assigned to this unit
+          const config = { ...project.siteplanConfig }; // Create a copy to avoid direct mutation issues
           Object.keys(config).forEach((key) => {
             if (config[key] === unit.id) {
               delete config[key];
@@ -287,7 +290,7 @@ export class ProjectController {
       const { unitId } = req.params;
       const unit = await unitRepository.findOne({
         where: { id: parseInt(unitId) },
-        relations: ["project", "progressLogs"],
+        relations: ["project", "progressLogs", "salesOrders", "salesOrders.customer", "salesOrders.documents"],
       });
       if (!unit) {
         return res.status(404).json({ message: "Unit not found" });

@@ -90,6 +90,8 @@ export function AddUnitForm({ projectId, siteplan, siteplanConfig, units }: AddU
             floors: 1,
             progress: 0,
             siteplanSelector: null,
+            salesStatus: "AVAILABLE" as any,
+            constructionStatus: "NOT_STARTED" as any,
         },
     });
 
@@ -113,7 +115,9 @@ export function AddUnitForm({ projectId, siteplan, siteplanConfig, units }: AddU
                 progress: 0,
                 siteplanSelector: null,
                 blockNumber: "",
-                unitType: ""
+                unitType: "",
+                salesStatus: "AVAILABLE" as any,
+                constructionStatus: "NOT_STARTED" as any,
             });
         }
     }, [open, reset, projectId]);

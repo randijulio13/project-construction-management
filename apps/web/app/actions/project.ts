@@ -155,3 +155,21 @@ export async function addProgressLog(
     return { success: false, error: errorMessage };
   }
 }
+
+export async function getSiteplanSvg(url: string): Promise<string | null> {
+  try {
+    const response = await fetch(url, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch SVG: ${response.statusText}`);
+    }
+
+    const text = await response.text();
+    return text;
+  } catch (error) {
+    console.error("Error in getSiteplanSvg action:", error);
+    return null;
+  }
+}

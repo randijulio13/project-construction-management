@@ -59,7 +59,8 @@ export function UnitsTable({ projectId, siteplan, siteplanConfig, units }: Units
                             <TableRow>
                                 <TableHead>{t("blockNumber")}</TableHead>
                                 <TableHead>{t("unitType")}</TableHead>
-                                <TableHead>{t("status")}</TableHead>
+                                <TableHead>{t("salesStatus")}</TableHead>
+                                <TableHead>{t("constructionStatus")}</TableHead>
                                 <TableHead>{t("progress")}</TableHead>
                                 <TableHead className="text-right">{t("actions")}</TableHead>
                             </TableRow>
@@ -68,7 +69,7 @@ export function UnitsTable({ projectId, siteplan, siteplanConfig, units }: Units
                             {units.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={5}
+                                        colSpan={6}
                                         className="h-24 text-center text-muted-foreground"
                                     >
                                         {t("noUnits")}
@@ -89,13 +90,21 @@ export function UnitsTable({ projectId, siteplan, siteplanConfig, units }: Units
                                         <TableCell>
                                             <Badge
                                                 variant={
-                                                    unit.status === "AVAILABLE" ? "default" :
-                                                        unit.status === "BOOKED" ? "secondary" :
-                                                            unit.status === "SOLD" ? "outline" : "destructive"
+                                                    unit.salesStatus === "AVAILABLE" ? "default" :
+                                                        unit.salesStatus === "BOOKED" ? "secondary" :
+                                                            unit.salesStatus === "SOLD" ? "outline" : "destructive"
                                                 }
                                                 className="text-[10px] font-semibold"
                                             >
-                                                {t(`status_${unit.status}`)}
+                                                {t(`status_${unit.salesStatus}`)}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge
+                                                variant="outline"
+                                                className="text-[10px] font-semibold bg-primary/5 border-primary/20 text-primary"
+                                            >
+                                                {t(`status_${unit.constructionStatus}`)}
                                             </Badge>
                                         </TableCell>
                                         <TableCell>

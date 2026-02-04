@@ -27,7 +27,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import { updateProject } from "@/app/actions/project";
+import { updateProject, getSiteplanSvg } from "@/app/actions/project";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ProjectUnit } from "@construction/shared";
@@ -90,10 +90,9 @@ export function AssignUnitSiteplan({ projectId, siteplan, siteplanConfig, units 
         const fetchSvg = async () => {
             setIsLoadingSvg(true);
             try {
-                const response = await fetch(`${siteplan}?t=${Date.now()}`);
-                const text = await response.text();
+                const text = await getSiteplanSvg(`${siteplan}?t=${Date.now()}`);
 
-                if (text.includes("<svg")) {
+                if (text && text.includes("<svg")) {
                     setSvgContent(text);
                 } else {
                     console.error("Fetched content is not an SVG");

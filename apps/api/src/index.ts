@@ -6,6 +6,7 @@ import { AppDataSource } from "./data-source";
 import userRoutes from "./routes/userRoutes";
 import authRoutes from "./routes/authRoutes";
 import projectRoutes from "./routes/projectRoutes";
+import salesRoutes from "./routes/salesRoutes";
 
 const app = express();
 app.use(cors());
@@ -18,6 +19,7 @@ const PORT = process.env.PORT || 4000;
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/projects", projectRoutes);
+app.use("/sales", salesRoutes);
 
 app.get("/", (req, res) => {
   res.json({

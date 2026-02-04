@@ -22,12 +22,14 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ProjectUnit, ProjectUnitStatus } from "@construction/shared";
+import { ProjectUnit, ProjectUnitSalesStatus, ProjectUnitConstructionStatus } from "@construction/shared";
 import { updateUnit } from "@/app/actions/project";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ProgressTimeline } from "./ProgressTimeline";
 import { AddProgressLogForm } from "./AddProgressLogForm";
+import { AddSalesOrderForm } from "./AddSalesOrderForm";
+import { SalesDataCard } from "./SalesDataCard";
 
 interface UnitManagementProps {
     projectId: string;
@@ -38,13 +40,16 @@ export function UnitManagement({ projectId, unit }: UnitManagementProps) {
     const t = useTranslations("projects");
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [status, setStatus] = useState<ProjectUnitStatus>(unit.status);
+    const [salesStatus, setSalesStatus] = useState<ProjectUnitSalesStatus>(unit.salesStatus);
+    const [constructionStatus, setConstructionStatus] = useState<ProjectUnitConstructionStatus>(unit.constructionStatus);
 
-    const handleUpdateStatus = async (newStatus: ProjectUnitStatus) => {
-        setStatus(newStatus);
+    const handleUpdateStatus = async (type: 'sales' | 'construction', newValue: string) => {
+        if (type === 'sales') setSalesStatus(newValue as ProjectUnitSalesStatus);
+        else setConstructionStatus(newValue as ProjectUnitConstructionStatus);
+
         setIsSubmitting(true);
         const result = await updateUnit(projectId, unit.id.toString(), {
-            status: newStatus
+            [type === 'sales' ? 'salesStatus' : 'constructionStatus']: newValue
         });
         setIsSubmitting(false);
 
@@ -69,28 +74,36 @@ export function UnitManagement({ projectId, unit }: UnitManagementProps) {
                                 </CardTitle>
                                 <CardDescription>{unit.unitType}</CardDescription>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <Select value={status} onValueChange={(val) => handleUpdateStatus(val as ProjectUnitStatus)}>
-                                    <SelectTrigger className="w-[140px] h-9">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value={ProjectUnitStatus.AVAILABLE}>{t("status_AVAILABLE")}</SelectItem>
-                                        <SelectItem value={ProjectUnitStatus.BOOKED}>{t("status_BOOKED")}</SelectItem>
-                                        <SelectItem value={ProjectUnitStatus.SOLD}>{t("status_SOLD")}</SelectItem>
-                                        <SelectItem value={ProjectUnitStatus.BLOCKED}>{t("status_BLOCKED")}</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <Badge
-                                    variant={
-                                        status === ProjectUnitStatus.AVAILABLE ? "default" :
-                                            status === ProjectUnitStatus.BOOKED ? "secondary" :
-                                                status === ProjectUnitStatus.SOLD ? "outline" : "destructive"
-                                    }
-                                    className="px-3 py-1 text-xs font-bold"
-                                >
-                                    {t(`status_${status}`)}
-                                </Badge>
+                            <div className="flex flex-col md:flex-row items-center gap-3">
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-[10px] font-bold uppercase text-muted-foreground ml-1">{t("salesStatus")}</span>
+                                    <Select value={salesStatus} onValueChange={(val) => handleUpdateStatus('sales', val)}>
+                                        <SelectTrigger className="w-[140px] h-9">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value={ProjectUnitSalesStatus.AVAILABLE}>{t("status_AVAILABLE")}</SelectItem>
+                                            <SelectItem value={ProjectUnitSalesStatus.BOOKED}>{t("status_BOOKED")}</SelectItem>
+                                            <SelectItem value={ProjectUnitSalesStatus.SOLD}>{t("status_SOLD")}</SelectItem>
+                                            <SelectItem value={ProjectUnitSalesStatus.BLOCKED}>{t("status_BLOCKED")}</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-[10px] font-bold uppercase text-muted-foreground ml-1">{t("constructionStatus")}</span>
+                                    <Select value={constructionStatus} onValueChange={(val) => handleUpdateStatus('construction', val)}>
+                                        <SelectTrigger className="w-[140px] h-9">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value={ProjectUnitConstructionStatus.NOT_STARTED}>{t("status_NOT_STARTED")}</SelectItem>
+                                            <SelectItem value={ProjectUnitConstructionStatus.SUBSTRUCTURE}>{t("status_SUBSTRUCTURE")}</SelectItem>
+                                            <SelectItem value={ProjectUnitConstructionStatus.SUPERSTRUCTURE}>{t("status_SUPERSTRUCTURE")}</SelectItem>
+                                            <SelectItem value={ProjectUnitConstructionStatus.FINISHING}>{t("status_FINISHING")}</SelectItem>
+                                            <SelectItem value={ProjectUnitConstructionStatus.COMPLETED}>{t("status_COMPLETED")}</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                         </div>
                     </CardHeader>
@@ -153,6 +166,13 @@ export function UnitManagement({ projectId, unit }: UnitManagementProps) {
                     </CardContent>
                 </Card>
 
+                {/* Sales Data Section */}
+                {(unit as any).salesOrders && (unit as any).salesOrders.length > 0 && (
+                    <SalesDataCard
+                        salesOrder={(unit as any).salesOrders.find((o: any) => o.status !== "CANCELLED")}
+                    />
+                )}
+
                 {/* Construction Progress Card */}
                 <Card className="border-none shadow-sm bg-card/60 backdrop-blur-sm">
                     <CardHeader>
@@ -193,6 +213,14 @@ export function UnitManagement({ projectId, unit }: UnitManagementProps) {
                     </CardHeader>
                     <CardContent className="p-0">
                         <div className="flex flex-col">
+                            {salesStatus === ProjectUnitSalesStatus.AVAILABLE && (
+                                <div className="p-4 border-b">
+                                    <AddSalesOrderForm
+                                        unitId={unit.id}
+                                        unitPrice={unit.price}
+                                    />
+                                </div>
+                            )}
                             <button className="flex items-center gap-3 p-4 hover:bg-muted/50 transition-colors text-left border-b">
                                 <CheckCircle2 className="size-5 text-green-500" />
                                 <div>

@@ -9,13 +9,11 @@ import {
 } from "typeorm";
 import { Project } from "./Project";
 import { ProjectUnitProgress } from "./ProjectUnitProgress";
+import { SalesOrder } from "./SalesOrder";
 
-export enum ProjectUnitStatus {
-  AVAILABLE = "AVAILABLE",
-  BOOKED = "BOOKED",
-  SOLD = "SOLD",
-  BLOCKED = "BLOCKED",
-}
+import { ProjectUnitSalesStatus, ProjectUnitConstructionStatus } from "@construction/shared";
+
+export { ProjectUnitSalesStatus, ProjectUnitConstructionStatus };
 
 @Entity()
 export class ProjectUnit {
@@ -36,10 +34,17 @@ export class ProjectUnit {
 
   @Column({
     type: "enum",
-    enum: ProjectUnitStatus,
-    default: ProjectUnitStatus.AVAILABLE,
+    enum: ProjectUnitSalesStatus,
+    default: ProjectUnitSalesStatus.AVAILABLE,
   })
-  status!: ProjectUnitStatus;
+  salesStatus!: ProjectUnitSalesStatus;
+
+  @Column({
+    type: "enum",
+    enum: ProjectUnitConstructionStatus,
+    default: ProjectUnitConstructionStatus.NOT_STARTED,
+  })
+  constructionStatus!: ProjectUnitConstructionStatus;
 
   @Column({ type: "decimal", precision: 15, scale: 2, default: 0 })
   price!: number;
@@ -61,6 +66,14 @@ export class ProjectUnit {
 
   @OneToMany(() => ProjectUnitProgress, (progress) => progress.unit)
   progressLogs!: ProjectUnitProgress[];
+
+  @OneToMany(() => SalesOrder, (order) => order.unit)
+  salesOrders!: SalesOrder[];
+
+  // Helper to get the active sales order
+  get currentSalesOrder(): SalesOrder | undefined {
+    return this.salesOrders?.find(o => o.status !== "CANCELLED");
+  }
 
   @CreateDateColumn()
   createdAt!: Date;

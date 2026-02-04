@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ProjectUnitStatus } from "../types/projects";
+import { ProjectUnitSalesStatus, ProjectUnitConstructionStatus } from "../types/projects";
 
 export const createProjectSchema = z.object({
   name: z.string().min(1, "projectNameRequired"),
@@ -34,7 +34,8 @@ export const createProjectUnitSchema = z.object({
   unitType: z.string().min(1, "unitTypeRequired"),
   landArea: z.number(),
   buildingArea: z.number().default(0),
-  status: z.nativeEnum(ProjectUnitStatus).default(ProjectUnitStatus.AVAILABLE),
+  salesStatus: z.nativeEnum(ProjectUnitSalesStatus).default(ProjectUnitSalesStatus.AVAILABLE),
+  constructionStatus: z.nativeEnum(ProjectUnitConstructionStatus).default(ProjectUnitConstructionStatus.NOT_STARTED),
   price: z.number().default(0),
   bedrooms: z.number().default(0),
   bathrooms: z.number().default(0),
@@ -58,3 +59,33 @@ export const createProjectUnitProgressSchema = z.object({
 });
 
 export type CreateProjectUnitProgressInput = z.infer<typeof createProjectUnitProgressSchema>;
+
+export const createCustomerSchema = z.object({
+  name: z.string().min(1, "customerNameRequired"),
+  email: z.string().email().optional().nullable(),
+  phone: z.string().min(1, "customerPhoneRequired"),
+  address: z.string().optional().nullable(),
+  identityNumber: z.string().min(1, "customerIdentityRequired"),
+});
+
+export type CreateCustomerInput = z.infer<typeof createCustomerSchema>;
+
+export const createSalesOrderSchema = z.object({
+  unitId: z.number(),
+  customerId: z.number().optional(), // Can be existing or new
+  customerData: createCustomerSchema.optional(), // If creating new customer
+  salesId: z.number(),
+  bookingDate: z.string(),
+  totalPrice: z.number(),
+  status: z.enum(["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED"]).default("PENDING"),
+});
+
+export type CreateSalesOrderInput = z.infer<typeof createSalesOrderSchema>;
+
+export const createSalesDocumentSchema = z.object({
+  salesOrderId: z.number(),
+  type: z.enum(["KTP", "NPWP", "SPR", "PAYMENT_PROOF", "OTHER"]),
+  fileUrl: z.string().min(1),
+});
+
+export type CreateSalesDocumentInput = z.infer<typeof createSalesDocumentSchema>;
