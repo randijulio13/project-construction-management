@@ -4,6 +4,7 @@ import { User } from "./entity/User";
 import { Project } from "./entity/Project";
 import { ProjectDocument } from "./entity/ProjectDocument";
 import { ProjectUnit } from "./entity/ProjectUnit";
+import { ProjectUnitProgress } from "./entity/ProjectUnitProgress";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -17,7 +18,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || "construction_db",
   synchronize: true,
   logging: process.env.NODE_ENV === "development",
-  entities: [User, Project, ProjectDocument, ProjectUnit],
+  entities: [User, Project, ProjectDocument, ProjectUnit, ProjectUnitProgress],
   migrations: [],
   subscribers: [],
 });

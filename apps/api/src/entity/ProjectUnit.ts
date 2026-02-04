@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
 import { Project } from "./Project";
+import { ProjectUnitProgress } from "./ProjectUnitProgress";
 
 export enum ProjectUnitStatus {
   AVAILABLE = "AVAILABLE",
@@ -56,6 +58,9 @@ export class ProjectUnit {
 
   @ManyToOne(() => Project, (project) => project.units)
   project!: Project;
+
+  @OneToMany(() => ProjectUnitProgress, (progress) => progress.unit)
+  progressLogs!: ProjectUnitProgress[];
 
   @CreateDateColumn()
   createdAt!: Date;

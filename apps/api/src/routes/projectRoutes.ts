@@ -49,5 +49,10 @@ router.post("/:id/documents", ProjectController.addDocument);
 router.post("/:id/units", ProjectController.addUnit);
 router.get("/:id/units/:unitId", ProjectController.getUnitDetail);
 router.put("/:id/units/:unitId", ProjectController.updateUnit);
+router.post(
+  "/:id/units/:unitId/progress",
+  upload.single("photo"),
+  ProjectController.addProgressLog
+);
 
 export default router;

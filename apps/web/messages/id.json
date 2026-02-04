@@ -106,7 +106,14 @@
     "completed": "Selesai",
     "updateStatus": "Pembaruan Status",
     "updateProgress": "Pembaruan Progres",
-    "quickActions": "Aksi Cepat"
+    "quickActions": "Aksi Cepat",
+    "addProgressLog": "Tambah Log Progres",
+    "addNewProgress": "Tambah Progres Baru",
+    "addProgressDescription": "Dokumentasikan pencapaian pembangunan dengan foto dan catatan.",
+    "photoEvidence": "Bukti Foto",
+    "notes": "Catatan",
+    "notesPlaceholder": "Ceritakan detail progres lapangan...",
+    "saveProgress": "Simpan Progres"
   },
   "profile": {
     "title": "Profil",

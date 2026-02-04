@@ -134,3 +134,24 @@ export async function getUnitById(
     return null;
   }
 }
+export async function addProgressLog(
+  projectId: string,
+  unitId: string,
+  formData: FormData,
+) {
+  try {
+    const result = await fetchApi<any>(
+      `/projects/${projectId}/units/${unitId}/progress`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+    return { success: true, data: result };
+  } catch (error) {
+    console.error(`Error in addProgressLog action for unit ${unitId}:`, error);
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+    return { success: false, error: errorMessage };
+  }
+}

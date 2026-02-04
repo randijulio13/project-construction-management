@@ -44,6 +44,15 @@ export enum ProjectUnitStatus {
   BLOCKED = "BLOCKED",
 }
 
+export interface ProjectUnitProgress {
+  id: number;
+  percentage: number;
+  notes?: string;
+  photoUrl?: string;
+  unitId: number;
+  createdAt: Date | string;
+}
+
 export interface ProjectUnit {
   id: number;
   blockNumber: string;
@@ -57,4 +66,5 @@ export interface ProjectUnit {
   floors: number;
   progress: number;
   projectId: number;
+  progressLogs: ProjectUnitProgress[];
 }

@@ -3,6 +3,7 @@ import { AppDataSource } from "../data-source";
 import { Project as ProjectEntity } from "../entity/Project";
 import { ProjectDocument as DocumentEntity } from "../entity/ProjectDocument";
 import { ProjectUnit as UnitEntity } from "../entity/ProjectUnit";
+import { ProjectUnitProgress as ProgressEntity } from "../entity/ProjectUnitProgress";
 import {
   CreateProjectRequest,
   UpdateProjectRequest,
@@ -12,6 +13,7 @@ import {
 const projectRepository = AppDataSource.getRepository(ProjectEntity);
 const documentRepository = AppDataSource.getRepository(DocumentEntity);
 const unitRepository = AppDataSource.getRepository(UnitEntity);
+const progressRepository = AppDataSource.getRepository(ProgressEntity);
 
 export class ProjectController {
   static getAll = async (req: Request, res: Response) => {
@@ -285,7 +287,7 @@ export class ProjectController {
       const { unitId } = req.params;
       const unit = await unitRepository.findOne({
         where: { id: parseInt(unitId) },
-        relations: ["project"],
+        relations: ["project", "progressLogs"],
       });
       if (!unit) {
         return res.status(404).json({ message: "Unit not found" });
@@ -294,6 +296,40 @@ export class ProjectController {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  static addProgressLog = async (req: Request, res: Response) => {
+    try {
+      const { unitId } = req.params;
+      const { percentage, notes } = req.body;
+
+      const unit = await unitRepository.findOne({
+        where: { id: parseInt(unitId) },
+      });
+
+      if (!unit) {
+        return res.status(404).json({ message: "Unit not found" });
+      }
+
+      const progressLog = new ProgressEntity();
+      progressLog.percentage = parseFloat(percentage);
+      progressLog.notes = notes;
+      progressLog.unit = unit;
+
+      if (req.file) {
+        progressLog.photoUrl = `/uploads/${req.file.filename}`;
+      }
+
+      await progressRepository.save(progressLog);
+
+      // Update unit overall progress to match the latest log
+      unit.progress = progressLog.percentage;
+      await unitRepository.save(unit);
+
+      res.status(201).json(progressLog);
+    } catch (error) {
+      res.status(400).json({ message: "Error adding progress log", error });
     }
   };
 }

@@ -106,7 +106,14 @@
     "completed": "Completed",
     "updateStatus": "Update Status",
     "updateProgress": "Update Progress",
-    "quickActions": "Quick Actions"
+    "quickActions": "Quick Actions",
+    "addProgressLog": "Add Progress Log",
+    "addNewProgress": "Add New Progress",
+    "addProgressDescription": "Document construction milestones with photos and notes.",
+    "photoEvidence": "Photo Evidence",
+    "notes": "Notes",
+    "notesPlaceholder": "Describe field progress details...",
+    "saveProgress": "Save Progress"
   },
   "profile": {
     "title": "Profile",

@@ -49,3 +49,12 @@ export const updateProjectUnitSchema = createProjectUnitSchema.partial().extend(
   id: z.number(),
 });
 export type UpdateProjectUnitInput = z.infer<typeof updateProjectUnitSchema>;
+
+export const createProjectUnitProgressSchema = z.object({
+  unitId: z.number(),
+  percentage: z.number().min(0).max(100),
+  notes: z.string().optional(),
+  photoUrl: z.string().optional(),
+});
+
+export type CreateProjectUnitProgressInput = z.infer<typeof createProjectUnitProgressSchema>;

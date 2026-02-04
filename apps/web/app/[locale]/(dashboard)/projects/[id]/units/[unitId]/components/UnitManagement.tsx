@@ -26,6 +26,8 @@ import { ProjectUnit, ProjectUnitStatus } from "@construction/shared";
 import { updateUnit } from "@/app/actions/project";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ProgressTimeline } from "./ProgressTimeline";
+import { AddProgressLogForm } from "./AddProgressLogForm";
 
 interface UnitManagementProps {
     projectId: string;
@@ -36,21 +38,20 @@ export function UnitManagement({ projectId, unit }: UnitManagementProps) {
     const t = useTranslations("projects");
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [progress, setProgress] = useState(unit.progress);
     const [status, setStatus] = useState<ProjectUnitStatus>(unit.status);
 
-    const handleUpdate = async () => {
+    const handleUpdateStatus = async (newStatus: ProjectUnitStatus) => {
+        setStatus(newStatus);
         setIsSubmitting(true);
         const result = await updateUnit(projectId, unit.id.toString(), {
-            progress,
-            status
+            status: newStatus
         });
         setIsSubmitting(false);
 
         if (result.success) {
             router.refresh();
         } else {
-            alert(result.error || "Failed to update unit");
+            alert(result.error || "Failed to update status");
         }
     };
 
@@ -68,16 +69,29 @@ export function UnitManagement({ projectId, unit }: UnitManagementProps) {
                                 </CardTitle>
                                 <CardDescription>{unit.unitType}</CardDescription>
                             </div>
-                            <Badge
-                                variant={
-                                    status === ProjectUnitStatus.AVAILABLE ? "default" :
-                                        status === ProjectUnitStatus.BOOKED ? "secondary" :
-                                            status === ProjectUnitStatus.SOLD ? "outline" : "destructive"
-                                }
-                                className="px-3 py-1 text-xs font-bold"
-                            >
-                                {t(`status_${status}`)}
-                            </Badge>
+                            <div className="flex items-center gap-3">
+                                <Select value={status} onValueChange={(val) => handleUpdateStatus(val as ProjectUnitStatus)}>
+                                    <SelectTrigger className="w-[140px] h-9">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value={ProjectUnitStatus.AVAILABLE}>{t("status_AVAILABLE")}</SelectItem>
+                                        <SelectItem value={ProjectUnitStatus.BOOKED}>{t("status_BOOKED")}</SelectItem>
+                                        <SelectItem value={ProjectUnitStatus.SOLD}>{t("status_SOLD")}</SelectItem>
+                                        <SelectItem value={ProjectUnitStatus.BLOCKED}>{t("status_BLOCKED")}</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Badge
+                                    variant={
+                                        status === ProjectUnitStatus.AVAILABLE ? "default" :
+                                            status === ProjectUnitStatus.BOOKED ? "secondary" :
+                                                status === ProjectUnitStatus.SOLD ? "outline" : "destructive"
+                                    }
+                                    className="px-3 py-1 text-xs font-bold"
+                                >
+                                    {t(`status_${status}`)}
+                                </Badge>
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -142,51 +156,30 @@ export function UnitManagement({ projectId, unit }: UnitManagementProps) {
                 {/* Construction Progress Card */}
                 <Card className="border-none shadow-sm bg-card/60 backdrop-blur-sm">
                     <CardHeader>
-                        <CardTitle className="text-lg flex items-center gap-2">
-                            <TrendingUp className="size-5 text-primary" />
-                            {t("constructionProgress")}
-                        </CardTitle>
+                        <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg flex items-center gap-2">
+                                <TrendingUp className="size-5 text-primary" />
+                                {t("constructionProgress")}
+                            </CardTitle>
+                            <AddProgressLogForm
+                                projectId={projectId}
+                                unitId={unit.id.toString()}
+                                currentProgress={unit.progress}
+                            />
+                        </div>
                     </CardHeader>
-                    <CardContent className="space-y-6">
+                    <CardContent className="space-y-8">
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="font-medium">{progress}% {t("completed")}</span>
+                                <span className="font-medium">{unit.progress}% {t("completed")}</span>
                                 <span className="text-muted-foreground">Target: 100%</span>
                             </div>
-                            <Progress value={progress} className="h-3" />
+                            <Progress value={unit.progress} className="h-3" />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-muted-foreground">{t("updateStatus")}</label>
-                                <Select value={status} onValueChange={(val) => setStatus(val as ProjectUnitStatus)}>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value={ProjectUnitStatus.AVAILABLE}>{t("status_AVAILABLE")}</SelectItem>
-                                        <SelectItem value={ProjectUnitStatus.BOOKED}>{t("status_BOOKED")}</SelectItem>
-                                        <SelectItem value={ProjectUnitStatus.SOLD}>{t("status_SOLD")}</SelectItem>
-                                        <SelectItem value={ProjectUnitStatus.BLOCKED}>{t("status_BLOCKED")}</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-muted-foreground">{t("updateProgress")} (%)</label>
-                                <div className="flex gap-2">
-                                    <Input
-                                        type="number"
-                                        min="0"
-                                        max="100"
-                                        value={progress}
-                                        onChange={(e) => setProgress(Number(e.target.value))}
-                                    />
-                                    <Button onClick={handleUpdate} disabled={isSubmitting} className="gap-2">
-                                        <Save className="size-4" />
-                                        {t("save")}
-                                    </Button>
-                                </div>
-                            </div>
+                        <div className="pt-4 border-t">
+                            <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-6">{t("history")}</h4>
+                            <ProgressTimeline logs={unit.progressLogs || []} />
                         </div>
                     </CardContent>
                 </Card>
